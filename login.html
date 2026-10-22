@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fafafa">
+<title>登录 · 校园二手</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="mark">二</span>校园二手</a>
+    <div class="nav-links" id="navActions"></div>
+  </div>
+</nav>
+
+<main class="wrap" style="max-width:430px;padding-top:48px">
+  <div class="kicker" style="margin-bottom:12px">SIGN IN</div>
+  <h1 style="font-size:30px;letter-spacing:-.03em;margin-bottom:8px">欢迎回来</h1>
+  <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:26px">用学号和密码登录，本机会记住你 180 天。</p>
+
+  <div id="alert"></div>
+
+  <form id="form">
+    <div class="field">
+      <label>学号</label>
+      <input id="sid" type="text" inputmode="numeric" autocomplete="username" placeholder="你的学号" required>
+    </div>
+    <div class="field">
+      <label>密码</label>
+      <input id="pwd" type="password" autocomplete="current-password" placeholder="至少 6 位" required>
+    </div>
+    <button class="btn block" id="btn" type="submit">登录</button>
+  </form>
+
+  <p class="form-foot">还没有账号？<a href="register.html">注册一个</a></p>
+</main>
+
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+const next = qs('next') || 'index.html';
+
+document.getElementById('form').onsubmit = async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('btn');
+  const sid = document.getElementById('sid').value.trim();
+  const pwd = document.getElementById('pwd').value;
+  const box = document.getElementById('alert');
+  box.innerHTML = '';
+
+  btn.disabled = true;
+  btn.textContent = '登录中…';
+
+  try {
+    const r = await api('/login', { method: 'POST', body: { sid, pwd }, auth: false });
+    Auth.save(r.token, r.user);
+    location.href = next;
+  } catch (err) {
+    box.innerHTML = `<div class="alert err">${esc(err.message)}</div>`;
+    btn.disabled = false;
+    btn.textContent = '登录';
+  }
+};
+
+(async function () {
+  await paintNav();
+  if (Auth.logged) {
+    const u = await Auth.verify();
+    if (u) { location.href = next; return; }
+  }
+})();
+</script>
+</body>
+</html>

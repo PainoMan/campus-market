@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fafafa">
+<title>物品详情 · 校园二手</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="loadbar" id="loadbar"></div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="mark">二</span>校园二手</a>
+    <div class="nav-links" id="navActions"></div>
+  </div>
+</nav>
+
+<main class="wrap" id="main">
+  <div class="detail" id="detail">
+    <div class="gallery skel" style="aspect-ratio:1/1"></div>
+    <div>
+      <div class="skel" style="height:26px;border-radius:8px;margin-bottom:12px"></div>
+      <div class="skel" style="height:16px;width:60%;border-radius:8px"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="in">
+    <div class="mono">CAMPUS MARKET</div>
+    <p>只做信息撮合 · 不提供支付 · 交易请当面验货<br><a href="about.html">用户协议与隐私说明</a></p>
+  </div>
+</footer>
+
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script>
+const id = qs('id');
+let item = null;
+
+function galleryHTML(images) {
+  if (!images || !images.length) {
+    return `<div class="ph">NO IMAGE</div>`;
+  }
+  return images.map((src, i) =>
+    `<img src="${esc(src)}" alt="" ${i > 0 ? 'loading="lazy"' : ''}>`).join('');
+}
+
+function render(d) {
+  const it = d.item;
+  item = it;
+  const statusMap = { on: ['on', '在售'], sold: ['sold', '已出'], removed: ['off', '已下架'] };
+  const [cls, label] = statusMap[it.status] || ['', it.status];
+
+  const contactBlock = it.show_contact && it.contact
+    ? `<div class="panel">
+         <h2>联系方式</h2>
+         <div style="font-size:15px;word-break:break-all;font-family:var(--mono)">${esc(it.contact)}</div>
+         <p class="field hint">建议先确认物品情况，约在校内公共场所当面交易，验货后再付款。</p>
+       </div>`
+    : `<div class="panel"><h2>联系方式</h2>
+         <p style="font-size:13px;color:var(--ink-2)">卖家没有公开联系方式，可以在下方留言联系。</p></div>`;
+
+  const ownerBar = it.is_owner ? `
+    <div class="panel">
+      <h2>管理这件物品</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${it.status !== 'sold' ? `<button class="btn ghost sm" onclick="setStatus('sold')">标记已出</button>` : ''}
+        ${it.status !== 'removed' ? `<button class="btn danger sm" onclick="setStatus('removed')">下架</button>` : ''}
+        ${it.status === 'removed' ? `<button class="btn ghost sm" onclick="setStatus('on')">重新上架</button>` : ''}
+      </div>
+    </div>` : '';
+
+  const msgs = d.messages.map(m => `
+    <div class="msg">
+      <div class="who">${esc(m.who)}</div>
+      <div class="txt">${esc(m.body)}</div>
+      <div class="when">${esc(m.created_at)}</div>
+    </div>`).join('') || `<p style="font-size:13px;color:var(--ink-3)">还没有留言，来问第一个问题吧。</p>`;
+
+  const loginBox = Auth.logged
+    ? `<form id="msgForm" style="margin-top:16px">
+         <textarea id="msgBody" maxlength="300" placeholder="问一下成色、能不能便宜、什么时候方便看货…"></textarea>
+         <div style="margin-top:10px"><button class="btn" type="submit">留言</button></div>
+       </form>`
+    : `<p style="font-size:13px;color:var(--ink-3);margin-top:14px">
+         <a href="login.html?next=${encodeURIComponent(location.pathname + location.search)}" style="color:var(--accent)">登录</a> 后可以留言
+       </p>`;
+
+  document.getElementById('detail').outerHTML = `
+  <div class="detail" id="detail">
+    <div class="gallery">${galleryHTML(it.images)}</div>
+    <div>
+      <div class="kicker" style="margin-bottom:10px">${esc(it.category)}</div>
+      <h1>${esc(it.title)}</h1>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
+        <span class="badge ${cls}">${label}</span>
+        <span style="font-size:12px;color:var(--ink-3)">${esc(it.seller)} · ${timeAgo(it.created_at)}</span>
+      </div>
+      <div class="price-xl">${priceText(it.price)}<small>${it.price ? '卖家标价' : ''}</small></div>
+      <div class="panel" style="margin-top:18px">
+        <h2>物品描述</h2>
+        <div class="desc">${esc(it.body) || '卖家没有写描述。'}</div>
+      </div>
+      ${contactBlock}
+      ${ownerBar}
+      <div class="panel">
+        <h2>留言 · ${d.messages.length}</h2>
+        ${msgs}
+        ${loginBox}
+      </div>
+      <div style="text-align:center;margin:18px 0 10px">
+        <a href="#" id="reportBtn" style="font-size:12px;color:var(--ink-3)">举报这件物品</a>
+      </div>
+    </div>
+  </div>`;
+
+  const form = document.getElementById('msgForm');
+  if (form) form.onsubmit = submitMessage;
+
+  document.getElementById('reportBtn').onclick = (e) => {
+    e.preventDefault();
+    if (!Auth.logged) return go('login.html?next=' + encodeURIComponent(location.pathname + location.search));
+    const reason = prompt('请简单说明举报原因（例如：虚假信息、违禁物品）');
+    if (!reason) return;
+    api('/report', { method: 'POST', body: { item_id: item.id, reason } })
+      .then(r => toast(r.msg || '已收到举报'))
+      .catch(err => toast(err.message));
+  };
+
+  document.title = it.title + ' · 校园二手';
+}
+
+async function submitMessage(e) {
+  e.preventDefault();
+  const el = document.getElementById('msgBody');
+  const body = el.value.trim();
+  if (!body) return toast('写点什么再发');
+  const btn = e.target.querySelector('button');
+  btn.disabled = true;
+  try {
+    await api('/messages', { method: 'POST', body: { item_id: item.id, body } });
+    el.value = '';
+    const d = await api('/item/' + item.id, { auth: false });
+    render(d);
+    toast('留言成功');
+  } catch (err) {
+    toast(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function setStatus(to) {
+  try {
+    await api('/item/' + item.id + '/status', { method: 'POST', body: { to } });
+    const d = await api('/item/' + item.id, { auth: false });
+    render(d);
+    toast(to === 'sold' ? '已标记为已出' : to === 'removed' ? '已下架' : '已重新上架');
+  } catch (e) {
+    toast(e.message);
+  }
+}
+
+(async function () {
+  await paintNav();
+  if (!id) { document.getElementById('main').innerHTML = '<div class="empty"><div class="big">404</div><p>缺少物品编号</p></div>'; return; }
+  const bar = document.getElementById('loadbar');
+  bar.style.width = '50%';
+  try {
+    const d = await api('/item/' + id, { auth: false });
+    render(d);
+    bar.style.width = '100%'; setTimeout(() => bar.classList.add('done'), 250);
+  } catch (e) {
+    document.getElementById('main').innerHTML = `<div class="empty"><div class="big">NOT FOUND</div><p>${esc(e.message)}</p><p style="margin-top:16px"><a href="index.html" style="color:var(--accent)">返回首页</a></p></div>`;
+  }
+  Auth.verify().then(() => paintNav());
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fafafa">
+<title>发布闲置 · 校园二手</title>
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="loadbar" id="loadbar"></div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="index.html"><span class="mark">二</span>校园二手</a>
+    <div class="nav-links" id="navActions"></div>
+  </div>
+</nav>
+
+<main class="wrap" style="max-width:720px;padding-top:34px">
+  <div class="kicker" style="margin-bottom:12px">NEW LISTING</div>
+  <h1 style="font-size:28px;letter-spacing:-.03em;margin-bottom:6px">发布闲置</h1>
+  <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:24px">
+    照片会自动压缩。平台不收款，交易请当面验货。
+  </p>
+
+  <div class="panel">
+    <div class="field">
+      <label>标题</label>
+      <input id="fTitle" type="text" maxlength="40" placeholder="例如：高数教材 第七版 九成新">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="field">
+        <label>价格（元）</label>
+        <input id="fPrice" type="number" min="0" step="0.1" value="0" placeholder="0 表示面议">
+      </div>
+      <div class="field">
+        <label>分类</label>
+        <select id="fCat">
+          <option>教材书籍</option>
+          <option>数码电子</option>
+          <option>生活用品</option>
+          <option>运动器材</option>
+          <option>其他</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>描述</label>
+      <textarea id="fBody" maxlength="1000" placeholder="成色、购买时间、有没有笔记、为什么出……"></textarea>
+    </div>
+
+    <div class="field">
+      <label>图片（最多 3 张）</label>
+      <div class="picker" id="picker">点击选择图片</div>
+      <input id="fImg" type="file" accept="image/*" multiple hidden>
+      <div class="thumbs" id="thumbs"></div>
+      <div class="hint">自动压到 720px，单张约 60–120KB</div>
+    </div>
+
+    <div class="field">
+      <label>联系方式</label>
+      <input id="fContact" type="text" maxlength="60" placeholder="微信号或 QQ，不填则使用注册时的微信">
+      <div class="hint">
+        <label style="display:inline-flex;align-items:center;gap:7px;cursor:pointer">
+          <input type="checkbox" id="fShow" checked style="width:auto">
+          在详情页公开联系方式
+        </label>
+      </div>
+    </div>
+
+    <button class="btn block" id="submitBtn">发布</button>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="in">
+    <div class="mono">CAMPUS MARKET</div>
+    <p>发布免费 · 不抽成 · 不参与交易</p>
+  </div>
+</footer>
+
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/img.js"></script>
+<script>
+let files = [];
+
+function paintThumbs() {
+  document.getElementById('thumbs').innerHTML = files.map((f, i) => `
+    <div class="thumb"><img src="${f.dataURL}" alt="">
+      <span class="x" onclick="removeImg(${i})">×</span></div>`).join('');
+}
+
+function removeImg(i) {
+  files.splice(i, 1);
+  paintThumbs();
+}
+
+document.getElementById('picker').onclick = () => document.getElementById('fImg').click();
+
+document.getElementById('fImg').onchange = async (e) => {
+  const list = Array.from(e.target.files).slice(0, 3 - files.length);
+  if (!list.length) return;
+  for (const f of list) {
+    try {
+      const dataURL = await compressImage(f);
+      files.push({ dataURL, name: f.name });
+    } catch (err) {
+      toast(err.message);
+    }
+  }
+  paintThumbs();
+  e.target.value = '';
+};
+
+async function submit() {
+  if (!Auth.requireLogin('publish.html')) return;
+  const title = document.getElementById('fTitle').value.trim();
+  const body = document.getElementById('fBody').value.trim();
+  const price = document.getElementById('fPrice').value || 0;
+  const category = document.getElementById('fCat').value;
+  const contact = document.getElementById('fContact').value.trim();
+  const show = document.getElementById('fShow').checked ? 1 : 0;
+
+  if (title.length < 1) return toast('请填写标题');
+  if (title.length > 40) return toast('标题最多 40 个字');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+
+  try {
+    const urls = [];
+    for (let i = 0; i < files.length; i++) {
+      btn.textContent = `上传图片 ${i + 1}/${files.length}…`;
+      urls.push(await uploadImage(files[i].dataURL));
+    }
+
+    btn.textContent = '发布中…';
+    const r = await api('/items', {
+      method: 'POST',
+      body: { title, body, price, category, contact, show_contact: show, images: urls }
+    });
+    location.href = 'item.html?id=' + r.id;
+  } catch (e) {
+    toast(e.message);
+    btn.disabled = false;
+    btn.textContent = '发布';
+  }
+}
+
+document.getElementById('submitBtn').onclick = submit;
+
+(async function () {
+  await paintNav();
+  const u = await Auth.verify();
+  if (!u) { Auth.requireLogin('publish.html'); return; }
+  if (u.wechat) document.getElementById('fContact').placeholder = '默认：' + u.wechat;
+})();
+</script>
+</body>
+</html>
