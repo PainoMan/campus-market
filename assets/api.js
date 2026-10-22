@@ -77,3 +77,19 @@ function qs(name) {
 }
 
 function go(url) { location.href = url; }
+
+
+/* 仅在页面可见时启用入场动画：
+   后台标签页的 CSS 动画会被冻结，若强制播放会导致整页停在 opacity:0 */
+(function () {
+  try {
+    if (!document.hidden) {
+      document.documentElement.classList.add('anim-ready');
+    } else {
+      document.addEventListener('visibilitychange', function once() {
+        document.documentElement.classList.add('anim-ready');
+        document.removeEventListener('visibilitychange', once);
+      });
+    }
+  } catch (e) {}
+})();
