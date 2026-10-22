@@ -131,7 +131,7 @@ async function load() {
   if (!u) { Auth.requireLogin('me.html'); return; }
   document.getElementById('nickname').textContent = u.nickname || ('同学' + u.id);
   document.getElementById('subtitle').textContent =
-    `学号 ${u.sid} · 手机 ${u.phone_masked || '未填'} · ${u.role === 'admin' ? '管理员' : '普通用户'}`;
+    `${u.phone_masked || '未绑定手机'} · ${u.role === 'admin' ? '管理员' : '普通用户'}`;
   if (u.role === 'admin') {
     const ab = document.getElementById('adminBtn');
     if (ab) ab.style.display = 'inline-flex';
