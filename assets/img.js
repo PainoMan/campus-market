@@ -1,7 +1,7 @@
 /* ============================================================
    图片：前端压缩 + 图床上传
    ============================================================ */
-const IMGBB_KEY = 'REPLACE_WITH_IMGBB_KEY';   // ← 图床 key（拿到后替换）
+const IMGBB_KEY = '26673cc9508341e392df972534ef0b4b';
 const IMGBB_ENDPOINT = 'https://api.imgbb.com/1/upload';
 
 /**
@@ -34,7 +34,7 @@ function compressImage(file, maxSide = 720, quality = 0.72) {
   });
 }
 
-/** 上传到 imgbb，返回图片 URL */
+/** 上传到 imgbb，返回 {url, thumb} */
 async function uploadImage(dataURL) {
   if (IMGBB_KEY === 'REPLACE_WITH_IMGBB_KEY') {
     throw new Error('图床还没配置，请联系管理员');
@@ -49,6 +49,7 @@ async function uploadImage(dataURL) {
   });
   const data = await res.json();
   if (!data.success) throw new Error('图片上传失败，请重试');
-  // 优先用中等尺寸，列表更轻
-  return data.data.medium?.url || data.data.url;
+  const full = data.data.url;
+  const thumb = (data.data.thumb && data.data.thumb.url) || full;
+  return { url: full, thumb: thumb };
 }
