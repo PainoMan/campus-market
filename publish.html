@@ -79,6 +79,22 @@
   </div>
 </footer>
 
+<div class="modal" id="limitModal">
+  <div class="box">
+    <h2>发布受限</h2>
+    <div class="meta">系统风控</div>
+    <div class="content" id="limitMsg"></div>
+    <div class="field" style="margin-top:18px">
+      <label>申请理由</label>
+      <textarea id="applyReason" maxlength="300" placeholder="简单说明一下，例如：社团要清理一批闲置物资，希望临时提高限额"></textarea>
+    </div>
+    <div class="actions" style="display:flex;gap:10px">
+      <button class="btn ghost" onclick="closeLimit()" style="flex:1">稍后再说</button>
+      <button class="btn" onclick="submitApply()" id="applyBtn" style="flex:1">立刻申请</button>
+    </div>
+  </div>
+</div>
+
 <script src="assets/api.js?v=20261023a"></script>
 <script src="assets/auth.js?v=20261023a"></script>
 <script src="assets/img.js?v=20261023a"></script>
@@ -142,9 +158,9 @@ async function submit() {
     });
     location.href = 'item.html?id=' + r.id;
   } catch (e) {
-    // 风控提示较长，用弹窗展示，避免 toast 截断
+    // 风控提示：弹窗 + 立刻申请入口
     if (/风控|发布商品过多/.test(e.message)) {
-      alert(e.message);
+      showLimit(e.message);
     } else {
       toast(e.message);
     }
@@ -154,6 +170,32 @@ async function submit() {
 }
 
 document.getElementById('submitBtn').onclick = submit;
+
+function showLimit(msg) {
+  document.getElementById('limitMsg').textContent = msg;
+  document.getElementById('limitModal').classList.add('show');
+}
+function closeLimit() {
+  document.getElementById('limitModal').classList.remove('show');
+}
+async function submitApply() {
+  const reason = document.getElementById('applyReason').value.trim();
+  if (reason.length < 2) { toast('请简单说明申请理由'); return; }
+  const btn = document.getElementById('applyBtn');
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+  try {
+    const r = await api('/application', { method: 'POST', body: { reason } });
+    closeLimit();
+    document.getElementById('applyReason').value = '';
+    alert(r.msg || '申请已提交，管理员审核后会解除限制');
+  } catch (e) {
+    toast(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '立刻申请';
+  }
+}
 
 (async function () {
   await paintNav();
