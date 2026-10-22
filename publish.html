@@ -142,7 +142,12 @@ async function submit() {
     });
     location.href = 'item.html?id=' + r.id;
   } catch (e) {
-    toast(e.message);
+    // 风控提示较长，用弹窗展示，避免 toast 截断
+    if (/风控|发布商品过多/.test(e.message)) {
+      alert(e.message);
+    } else {
+      toast(e.message);
+    }
     btn.disabled = false;
     btn.textContent = '发布';
   }
