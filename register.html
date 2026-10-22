@@ -6,12 +6,54 @@
 <meta name="theme-color" content="#fafafa">
 <title>注册 · 别丢</title>
 <link rel="stylesheet" href="assets/app.css">
+<style>
+.modal{
+  position:fixed;inset:0;z-index:200;background:rgba(10,10,11,.45);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.modal.show{display:flex}
+.sheet{
+  width:100%;max-width:540px;background:#fff;
+  border-radius:22px 22px 0 0;
+  padding:24px 22px calc(22px + env(safe-area-inset-bottom));
+  max-height:88vh;overflow-y:auto;
+  animation:sheetIn .3s cubic-bezier(.22,.61,.36,1);
+}
+@keyframes sheetIn{
+  from{transform:translateY(26px)}
+  to{transform:none}
+}
+.sheet h2{font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.sheet .sub{font-size:13px;color:var(--ink-2);line-height:1.7;margin-bottom:18px}
+.doc-link{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border:1px solid var(--line);border-radius:12px;
+  margin-bottom:10px;font-size:14.5px;font-weight:500;
+  transition:border-color .15s,background .15s;
+}
+.doc-link:hover{border-color:var(--line-strong);background:var(--surface-2)}
+.doc-link span:last-child{color:var(--ink-3);font-size:12px}
+.agree{
+  display:flex;gap:10px;align-items:flex-start;
+  margin:18px 0 16px;font-size:13.5px;line-height:1.6;cursor:pointer;
+}
+.agree input{
+  width:20px;height:20px;flex-shrink:0;margin-top:1px;accent-color:var(--accent);cursor:pointer;
+}
+.sheet .tip{text-align:center;font-size:11.5px;color:var(--ink-3);margin-top:12px;line-height:1.7}
+.close-x{
+  background:none;border:none;font-size:22px;line-height:1;color:var(--ink-3);
+  cursor:pointer;padding:4px 6px;margin:-4px -6px 0 0;
+}
+</style>
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-in">
-    <a class="brand" href="index.html"><svg class="mark" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="17" fill="#FF5A1F"/><path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/></svg>别丢</a>
+    <a class="brand" href="index.html">
+      <svg class="mark" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="17" fill="#FF5A1F"/><path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/></svg>别丢
+    </a>
     <div class="nav-links" id="navActions"></div>
   </div>
 </nav>
@@ -51,47 +93,118 @@
     <button class="btn block" id="btn" type="submit">创建账号</button>
 
     <p class="form-foot">
-      注册即表示同意 <a href="notice.html">用户须知</a> · <a href="privacy.html">隐私政策</a><br>
+      点击「创建账号」后需阅读并同意
+      <a href="notice.html" target="_blank">《用户须知》</a>与<a href="privacy.html" target="_blank">《隐私政策》</a><br>
       密码加密存储，手机号加密保存，任何其他用户都看不到
     </p>
   </form>
 </main>
 
+<!-- 同意确认层 -->
+<div class="modal" id="consentModal">
+  <div class="sheet">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div>
+        <h2>注册前请确认</h2>
+        <p class="sub">使用本平台前，请阅读并同意以下两份文件。不同意将无法注册。</p>
+      </div>
+      <button class="close-x" onclick="closeConsent()" aria-label="关闭">×</button>
+    </div>
+
+    <a class="doc-link" href="notice.html" target="_blank">
+      <span>用户须知（20 条）</span><span>阅读 ›</span>
+    </a>
+    <a class="doc-link" href="privacy.html" target="_blank">
+      <span>隐私政策</span><span>阅读 ›</span>
+    </a>
+
+    <label class="agree">
+      <input type="checkbox" id="agreeBox">
+      <span>我已阅读并同意《用户须知》与《隐私政策》，理解本平台<strong>只提供信息展示，不参与交易、不提供支付与担保</strong>。</span>
+    </label>
+
+    <button class="btn block" id="agreeBtn">同意并继续</button>
+    <p class="tip">签署时系统会记录你的昵称、签署时间与 IP，可在隐私政策页随时查看</p>
+  </div>
+</div>
+
 <script src="assets/api.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-document.getElementById('form').onsubmit = async (e) => {
+const form = document.getElementById('form');
+const modal = document.getElementById('consentModal');
+const agreeBox = document.getElementById('agreeBox');
+let pendingData = null;
+
+form.onsubmit = (e) => {
   e.preventDefault();
-  const btn = document.getElementById('btn');
   const box = document.getElementById('alert');
+  box.innerHTML = '';
+
   const sid = document.getElementById('sid').value.trim();
   const phone = document.getElementById('phone').value.trim();
   const wechat = document.getElementById('wechat').value.trim();
   const nickname = document.getElementById('nickname').value.trim();
   const pwd = document.getElementById('pwd').value;
 
-  box.innerHTML = '';
-
   if (!/^[0-9A-Za-z]{6,20}$/.test(sid)) { box.innerHTML = '<div class="alert err">学号格式不对（6–20 位字母或数字）</div>'; return; }
   if (!/^1[3-9]\d{9}$/.test(phone)) { box.innerHTML = '<div class="alert err">手机号格式不对</div>'; return; }
   if (!wechat) { box.innerHTML = '<div class="alert err">请填写微信号或 QQ 号</div>'; return; }
   if (pwd.length < 6) { box.innerHTML = '<div class="alert err">密码至少 6 位</div>'; return; }
 
+  pendingData = { sid, phone, wechat, nickname, pwd };
+  openConsent();
+};
+
+function openConsent() {
+  agreeBox.checked = false;
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConsent() {
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+  toast('请仔细阅读用户须知内容并同意才可使用本网站功能', 3200);
+}
+
+// 点击遮罩关闭
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeConsent();
+});
+
+document.getElementById('agreeBtn').onclick = async () => {
+  if (!agreeBox.checked) {
+    toast('请先勾选「我已阅读并同意」');
+    return;
+  }
+  const btn = document.getElementById('agreeBtn');
   btn.disabled = true;
   btn.textContent = '创建中…';
 
   try {
-    const r = await api('/register', { method: 'POST', auth: false, body: { sid, phone, wechat, nickname, pwd } });
+    const r = await api('/register', {
+      method: 'POST',
+      auth: false,
+      body: { ...pendingData, agreed: true, consent_version: 'V1.0' }
+    });
     Auth.save(r.token, r.user);
-    location.href = 'index.html';
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    toast('注册成功，正在进入…');
+    setTimeout(() => location.href = 'index.html', 600);
   } catch (err) {
-    box.innerHTML = `<div class="alert err">${esc(err.message)}</div>`;
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+    document.getElementById('alert').innerHTML = `<div class="alert err">${esc(err.message)}</div>`;
     btn.disabled = false;
-    btn.textContent = '创建账号';
+    btn.textContent = '同意并继续';
   }
 };
 
-paintNav();
+(async function () {
+  await paintNav();
+})();
 </script>
 </body>
 </html>

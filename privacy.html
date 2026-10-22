@@ -892,7 +892,12 @@ footer a{color:var(--sub);text-decoration:underline}
 <strong>⑤ 你们不出售、不共享我的个人信息，不做出境传输（第 6、9 条）。</strong></p>
 </blockquote>
 <p>□ 我已阅读并同意《隐私政策》（<strong>单独勾选，不与《用户须知》合并</strong>）</p>
-<p>用户昵称：＿＿＿＿＿＿＿＿　签署时间：＿＿＿＿年＿＿月＿＿日 ＿＿:＿＿　IP：＿＿＿＿＿＿＿＿　版本：V1.0</p>
+<div id="signRecord">
+<p><strong>我的签署记录</strong></p>
+<p>用户昵称：<strong id="sNick">＿＿＿＿＿＿</strong>　签署时间：<strong id="sTime">＿＿＿＿年＿＿月＿＿日</strong></p>
+<p>IP：<strong id="sIP">＿＿＿＿＿＿</strong>　版本：<strong id="sVer">V1.0</strong></p>
+<p style="font-size:13px;color:var(--sub)" id="sHint">登录后可查看你的实际签署记录（注册时自动留痕）。</p>
+</div>
 <hr/>
 </main>
 <footer>
@@ -902,6 +907,25 @@ footer a{color:var(--sub);text-decoration:underline}
   <p style="margin-top:14px">本页面最后更新：2026-10-22</p>
 </footer>
 <div class="totop" id="tt" aria-label="返回顶部">↑</div>
+<script>
+/* 加载当前用户的签署留痕 */
+(function(){
+  var tk = null;
+  try { tk = localStorage.getItem('token'); } catch(e) {}
+  if (!tk) return;
+  fetch('https://119.91.29.16:8444/api/consent', {
+    headers: { 'Authorization': 'Bearer ' + tk }
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if (!d || !d.ok || !d.consent) return;
+    var c = d.consent;
+    document.getElementById('sNick').textContent = c.nickname || '—';
+    document.getElementById('sTime').textContent = c.at || '—';
+    document.getElementById('sIP').textContent = c.ip || '未记录';
+    document.getElementById('sVer').textContent = c.version || 'V1.0';
+    document.getElementById('sHint').textContent = '以上为你在注册时留存的实际记录，不可编辑。';
+  }).catch(function(){});
+})();
+</script>
 <script>
 (function(){
   var pg=document.getElementById('pg'),tt=document.getElementById('tt');
