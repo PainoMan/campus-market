@@ -73,9 +73,8 @@ async function paintNav() {
       <a href="contact.html">联系作者</a>
       <a href="messages.html">消息<span id="msgDot" style="display:none"></span></a>
       <a href="publish.html">发布</a>
-      <a href="me.html">${esc(u.nickname || '我的')}</a>
-      <a href="#" id="logoutBtn">退出</a>`;
-    const btn = document.getElementById('logoutBtn');
+      <a href="me.html">${esc((u.nickname || '我的').slice(0, 4))}</a>`;
+    const btn = null;
     api('/notifications').then(r => {
       const d = document.getElementById('msgDot');
       if (d && r.unread > 0) {
