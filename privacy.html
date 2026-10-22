@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2056%2056%22%3E%3Crect%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2213%22%20fill%3D%22%23FF5A1F%22%2F%3E%3Cpath%20d%3D%22M16%2022v10a12%2012%200%200%200%2024%200V22%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%224.6%22%20stroke-linecap%3D%22round%22%2F%3E%3Crect%20x%3D%2222.4%22%20y%3D%229.2%22%20width%3D%2211.2%22%20height%3D%2211.2%22%20rx%3D%223.6%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E">
+<meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme:light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme:dark)">
+<title>隐私政策 · 别丢</title>
+<style>
+:root{
+  --bg:#f5f5f7; --card:#fff; --text:#1d1d1f; --sub:#6e6e73;
+  --line:#e8e8ed; --line2:#f2f2f5; --accent:#0071e3;
+  --keybg:#fffbf0; --keyline:#f0a020; --notebg:#f7f8fa;
+}
+*{box-sizing:border-box;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","Helvetica Neue","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:16px;line-height:1.8;-webkit-font-smoothing:antialiased;
+}
+.progress{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:99;transition:width .1s linear}
+.top{
+  position:sticky;top:0;z-index:50;
+  background:rgba(245,245,247,.82);backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--line);
+}
+.top-in{max-width:820px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:18px}
+nav{display:flex;gap:6px;margin-left:auto}
+nav a{
+  font-size:14px;color:var(--sub);text-decoration:none;padding:6px 12px;border-radius:999px;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+nav a:hover{background:rgba(0,0,0,.05);color:var(--text)}
+nav a.on{background:var(--text);color:#fff}
+.card{
+  max-width:820px;margin:28px auto 60px;background:var(--card);
+  border-radius:20px;padding:52px 56px 64px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 40px rgba(0,0,0,.03);
+}
+h1,h2,h3,h4,[id]{scroll-margin-top:76px}
+.sub-title{font-size:13.5px;font-weight:500;color:var(--sub);letter-spacing:.04em;margin:0 0 10px}
+h1{font-size:34px;line-height:1.2;letter-spacing:-.03em;font-weight:650;margin:0 0 14px}
+h2{
+  font-size:21px;line-height:1.4;font-weight:640;letter-spacing:-.01em;
+  margin:52px 0 18px;padding-top:26px;border-top:1px solid var(--line2);
+}
+h2:first-of-type{border-top:none;padding-top:0;margin-top:36px}
+h3{font-size:16.5px;font-weight:640;margin:30px 0 10px}
+h4{font-size:15px;font-weight:640;margin:22px 0 8px}
+p{margin:14px 0;font-size:15.5px;color:#333;line-height:1.85}
+strong{font-weight:640;color:var(--text)}
+em{font-style:normal;color:var(--sub)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+ul,ol{padding-left:22px;margin:14px 0}
+li{font-size:15.5px;line-height:1.85;margin:7px 0;color:#333}
+li>p{margin:6px 0}
+hr{border:none;border-top:1px solid var(--line2);margin:44px 0}
+blockquote{
+  margin:20px 0;padding:14px 18px;background:var(--notebg);
+  border-left:3px solid #d2d2d7;border-radius:0 10px 10px 0;
+  color:var(--sub);font-size:14px;line-height:1.75;
+}
+blockquote p{font-size:14px;color:var(--sub);margin:6px 0}
+blockquote strong{color:#444}
+.key{
+  background:var(--keybg);border-left:3px solid var(--keyline);
+  padding:14px 18px;border-radius:0 10px 10px 0;margin:18px 0;
+}
+.key.wide{padding:16px 20px}
+.key p{color:#3a3a3c}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:20px -4px;padding:0 4px}
+table{
+  width:100%;border-collapse:collapse;font-size:14px;line-height:1.65;
+  min-width:0;
+}
+table.wide{min-width:640px}
+table.num th:first-child,table.num td:first-child{width:56px}
+table.num td:first-child{white-space:nowrap}
+th:nth-child(2),td:nth-child(2){white-space:nowrap}
+th{
+  background:var(--bg);text-align:left;padding:11px 13px;font-weight:640;
+  border-bottom:1px solid var(--line);white-space:nowrap;color:#333;
+}
+td{padding:11px 13px;border-bottom:1px solid var(--line2);vertical-align:top;color:#3a3a3c}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafafa}
+.toc{
+  margin:30px 0 10px;padding:18px 22px;background:var(--bg);
+  border-radius:14px;font-size:14px;
+}
+.toc summary{cursor:pointer;font-weight:640;color:var(--text);list-style:none;outline:none}
+.toc summary::-webkit-details-marker{display:none}
+.toc summary::after{content:"展开";float:right;color:var(--sub);font-weight:400;font-size:13px}
+.toc[open] summary::after{content:"收起"}
+.toc ol{margin:14px 0 0;padding-left:20px;columns:2;column-gap:32px}
+.toc li{margin:5px 0;font-size:13.5px;break-inside:avoid}
+.toc a{color:#444}
+.toc a:hover{color:var(--accent)}
+footer{max-width:820px;margin:0 auto 50px;padding:0 24px;color:var(--sub);font-size:12.5px;line-height:1.9;text-align:center}
+footer a{color:var(--sub);text-decoration:underline}
+.totop{
+  position:fixed;right:20px;bottom:28px;width:42px;height:42px;border-radius:50%;
+  background:rgba(255,255,255,.92);border:1px solid var(--line);
+  box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;
+  color:var(--text);font-size:16px;
+}
+.totop.show{opacity:1;pointer-events:auto}
+@media (max-width:680px){
+  .card{margin:0;border-radius:0;padding:32px 20px 56px;box-shadow:none}
+  h1{font-size:28px}
+  h2{font-size:19px;margin-top:42px;padding-top:22px}
+  .top-in{padding:10px 16px;gap:10px}
+  nav a{font-size:13px;padding:5px 10px}
+  .toc ol{columns:1}
+  p,li{font-size:15px}
+  table{font-size:13px}
+  th,td{padding:9px 10px}
+  table.wide{display:block;min-width:0;border-collapse:separate}
+  table.wide thead{display:none}
+  table.wide tbody{display:block}
+  table.wide tr{
+    display:block;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;margin:0 0 12px;padding:8px 14px;
+  }
+  table.wide td{
+    display:block;position:relative;border:none;
+    padding:7px 0 7px 96px;font-size:13.5px;line-height:1.68;
+  }
+  table.wide td::before{
+    content:attr(data-label);position:absolute;left:0;top:8px;width:86px;
+    color:var(--sub);font-size:12px;line-height:1.6;font-weight:500;
+  }
+  table.wide td:first-child{font-weight:640}
+  table.wide tbody tr:hover{background:var(--card)}
+  .totop{right:14px;bottom:20px;width:38px;height:38px}
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#000;--card:#1c1c1e;--text:#f5f5f7;--sub:#98989d;
+    --line:#2c2c2e;--line2:#242426;--keybg:#2a2418;--keyline:#c98a1a;--notebg:#242426;
+  }
+  .top{background:rgba(0,0,0,.78)}
+  p,li,td{color:#d1d1d6}
+  th{color:#e5e5ea}
+  nav a.on{background:#f5f5f7;color:#000}
+  .totop{background:rgba(44,44,46,.92)}
+  table{min-width:520px}
+  tbody tr:hover{background:#242426}
+  .key p{color:#e8e0cc}
+  blockquote strong{color:#c7c7cc}
+}
+@media print{
+  :root{--bg:#fff;--card:#fff}
+  body{background:#fff}
+  .top,.toc,.totop,.progress{display:none!important}
+  .card{box-shadow:none;padding:0;margin:0;max-width:none}
+  a{color:#000;text-decoration:none}
+  h2{break-after:avoid}
+  table{min-width:0}
+  .table-wrap{overflow:visible}
+}
+
+/* ══ 品牌：别丢 ══ */
+:root{--brand:#FF5A1F;--brand-ink:#14211C}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;
+  color:var(--text);flex:none;line-height:1}
+.brand:hover{text-decoration:none}
+.brand .b-logo{width:36px;height:36px;flex:none;border-radius:10.5px;
+  box-shadow:0 1px 2px rgba(255,90,31,.3),0 5px 16px rgba(255,90,31,.18)}
+.brand .b-tx{display:flex;align-items:baseline;gap:8px}
+.brand .b-name{font-size:19.5px;font-weight:750;letter-spacing:-.035em}
+.brand .b-sub{font-size:10.5px;font-weight:650;color:var(--sub);
+  letter-spacing:.16em;white-space:nowrap}
+@media (max-width:520px){.brand .b-sub{display:none}}
+.masthead{display:flex;align-items:center;gap:15px;margin:0 0 30px;
+  padding:0 0 26px;border-bottom:1px solid var(--line2)}
+.masthead .m-logo{width:62px;height:62px;flex:none;border-radius:19px;
+  box-shadow:0 2px 5px rgba(255,90,31,.26),0 12px 32px rgba(255,90,31,.16)}
+.masthead .m-tx{display:flex;flex-direction:column;gap:6px;min-width:0}
+.masthead .m-name{font-size:27px;font-weight:800;letter-spacing:-.045em;line-height:1}
+.masthead .m-sub{font-size:12px;color:var(--sub);letter-spacing:.05em;font-weight:500}
+.foot-brand{display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:0 0 12px;color:var(--text);font-size:13px;font-weight:700;letter-spacing:-.01em}
+.foot-brand svg{width:20px;height:20px;border-radius:6.4px}
+.foot-brand em{font-style:normal;font-weight:500;color:var(--sub);font-size:12px}
+@media (prefers-color-scheme:dark){
+  .masthead .m-logo,.brand .b-logo{box-shadow:0 2px 10px rgba(255,90,31,.3)}
+}
+@media print{.brand .b-logo,.masthead .m-logo{box-shadow:none}}
+
+</style>
+</head>
+<body>
+<div class="progress" id="pg"></div>
+<header class="top"><div class="top-in"><a class="brand" href="index.html"><svg class="b-logo" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="17" fill="#FF5A1F"/><path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/></svg><span class="b-tx"><span class="b-name">别丢</span><span class="b-sub">电院闲置</span></span></a><nav><a href="notice.html" class="">用户须知</a><a href="privacy.html" class="on">隐私政策</a></nav></div></header>
+<main class="card">
+<div class="masthead"><svg class="m-logo" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="17" fill="#FF5A1F"/><path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/></svg><div class="m-tx"><span class="m-name">别丢</span><span class="m-sub">电院闲置 · 广西电力职业技术学院</span></div></div><h1>隐私政策</h1>
+<p><strong>版本：V1.0　｜　生效日期：2026 年 10 月 22 日　｜　运营方：本网站运营团队</strong></p>
+<details class="toc"><summary>目录（14 条）</summary><ol><li><a href="#s0">第 1 条　我们是谁、如何联系我们</a></li><li><a href="#s1">第 2 条　定义与解释</a></li><li><a href="#s2">第 3 条　本政策的适用范围</a></li><li><a href="#s3">第 4 条　我们收集哪些个人信息、为什么收集、保存多久</a></li><li><a href="#s4">第 5 条　Cookie 与同类技术</a></li><li><a href="#s5">第 6 条　委托处理、共享、转让与公开披露</a></li><li><a href="#s6">第 7 条　我们如何保护你的个人信息</a></li><li><a href="#s7">第 8 条　你的权利与行使方式</a></li><li><a href="#s8">第 9 条　个人信息的存储</a></li><li><a href="#s9">第 10 条　未成年人个人信息保护</a></li><li><a href="#s10">第 11 条　投诉与救济渠道</a></li><li><a href="#s11">第 12 条　本政策的更新</a></li><li><a href="#s12">第 13 条　本政策的效力</a></li><li><a href="#s13">第 14 条　签署</a></li></ol></details><blockquote>
+<p>本政策依据《中华人民共和国个人信息保护法》第十七条要求，完整告知你以下四项事项：
+<strong>① 我们的名称与联系方式　② 处理目的、处理方式、信息种类、保存期限　③ 你行使权利的方式和程序　④ 其他法定应告知事项</strong></p>
+<p>本政策与《用户须知》具有同等效力；两者关于个人信息处理的规定不一致时，以本政策为准。</p>
+</blockquote>
+<hr/>
+<h2 id="s0">第 1 条　我们是谁、如何联系我们</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>个人信息处理者名称</td>
+<td>本网站运营团队</td>
+</tr>
+<tr>
+<td>联系方式（邮箱）</td>
+<td><a href="mailto:moxi9006@icloud.com">moxi9006@icloud.com</a></td>
+</tr>
+<tr>
+<td>个人信息保护负责人</td>
+<td>本网站运营团队负责人　｜　联系方式：同上</td>
+</tr>
+<tr>
+<td>通信地址</td>
+<td>以电子邮件为主要送达方式</td>
+</tr>
+<tr>
+<td>投诉与举报受理</td>
+<td><a href="mailto:moxi9006@icloud.com">moxi9006@icloud.com</a>（同一邮箱）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 17 条第 1 款第（一）项：个人信息处理者的名称或者姓名和联系方式。</p>
+<p><strong>1.1</strong> 我们是"个人信息处理者"，对本政策项下的处理活动负责（第 9 条）。</p>
+<p><strong>1.2</strong> 你对我们处理你个人信息的行为有疑问、异议、投诉的，可通过上表任一渠道提出；我们将在 <strong>15 个工作日</strong>内答复并说明理由（第 50 条）。</p>
+<hr/>
+<h2 id="s1">第 2 条　定义与解释</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>个人信息</strong></td>
+<td>以电子或者其他方式记录的与已识别或者可识别的自然人有关的各种信息，不包括匿名化处理后的信息（第 4 条第 1 款）</td>
+</tr>
+<tr>
+<td><strong>敏感个人信息</strong></td>
+<td>一旦泄露或者非法使用，容易导致自然人的人格尊严受到侵害或者人身、财产安全受到危害的个人信息，包括生物识别、宗教信仰、特定身份、医疗健康、金融账户、行踪轨迹等信息，以及不满十四周岁未成年人的个人信息（第 28 条）</td>
+</tr>
+<tr>
+<td><strong>去标识化</strong></td>
+<td>个人信息经过处理，使其在不借助额外信息的情况下无法识别特定自然人的过程（第 73 条第 3 项）</td>
+</tr>
+<tr>
+<td><strong>匿名化</strong></td>
+<td>个人信息经过处理无法识别特定自然人且不能复原的过程（第 73 条第 4 项）；匿名化后的信息不属于个人信息</td>
+</tr>
+<tr>
+<td><strong>单独同意</strong></td>
+<td>你针对特定处理行为，单独点击同意或勾选，不与其他事项合并取得</td>
+</tr>
+<tr>
+<td><strong>处理</strong></td>
+<td>包括收集、存储、使用、加工、传输、提供、公开、删除等（第 4 条第 2 款）</td>
+</tr>
+</tbody>
+</table></div>
+<hr/>
+<h2 id="s2">第 3 条　本政策的适用范围</h2>
+<p><strong>3.1</strong> 本政策适用于你通过本平台网页、H5 页面及站内私信系统进行的一切个人信息处理活动。</p>
+<p><strong>3.2</strong> 本政策<strong>不适用</strong>于：</p>
+<p>（1）用户之间通过站内私信或线下自行交换的信息——该等交换由你们双方自行决定，我们<strong>不参与、不记录私信内容之外的交换行为</strong>；
+（2）第三方网站：你点击站内链接跳转至第三方（如快递查询、地图导航）后，其信息处理行为适用该第三方的隐私政策，我们无法控制亦不负责。</p>
+<p><strong>3.3</strong> 本平台<strong>不面向境外用户</strong>，数据全部存储于中华人民共和国境内，<strong>不涉及个人信息出境</strong>（第 38–39 条不适用）。</p>
+<hr/>
+<h2 id="s3">第 4 条　我们收集哪些个人信息、为什么收集、保存多久</h2>
+<blockquote>
+<p><strong>本节对照《个人信息保护法》第 17 条第 1 款第（二）项：处理目的、处理方式、处理的个人信息种类、保存期限。</strong>
+<strong>下表所列即我们的全部收集范围。表中未列明的信息，我们不收集。</strong></p>
+</blockquote>
+<h3>4.1 收集清单</h3>
+<div class="table-wrap"><table class="wide num">
+<thead>
+<tr>
+<th>#</th>
+<th>信息种类</th>
+<th>具体字段</th>
+<th>处理目的</th>
+<th>处理方式</th>
+<th>是否必需</th>
+<th>保存期限</th>
+<th>法律依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="#">1</td>
+<td data-label="信息种类">身份核验信息</td>
+<td data-label="具体字段">学号/工号、真实姓名</td>
+<td data-label="处理目的">确认校内身份；落实网络实名制；一人一号防规避</td>
+<td data-label="处理方式">存储、比对（与学校认证接口校验，<strong>校验后仅存储校验结果与必要标识，不存储密码</strong>）</td>
+<td data-label="是否必需"><strong>必需</strong>，不提供则无法注册</td>
+<td data-label="保存期限">账号存续期间 + 注销后 30 日</td>
+<td data-label="法律依据">PIPL 第 13 条第 1 款第（一）项；《网络安全法》第 24 条</td>
+</tr>
+<tr>
+<td data-label="#">2</td>
+<td data-label="信息种类">账号信息</td>
+<td data-label="具体字段">昵称、头像、院系、年级</td>
+<td data-label="处理目的">展示与识别；防止冒用</td>
+<td data-label="处理方式">存储、公开展示</td>
+<td data-label="是否必需">昵称必需；头像、院系、年级<strong>可选</strong></td>
+<td data-label="保存期限">同上</td>
+<td data-label="法律依据">PIPL 第 13 条第 1 款第（一）项</td>
+</tr>
+<tr>
+<td data-label="#">3</td>
+<td data-label="信息种类">联系方式</td>
+<td data-label="具体字段">手机号</td>
+<td data-label="处理目的">账号找回、安全通知、紧急联系</td>
+<td data-label="处理方式">存储、<strong>不公开</strong>、仅用于短信发送</td>
+<td data-label="是否必需"><strong>必需</strong></td>
+<td data-label="保存期限">同上</td>
+<td data-label="法律依据">PIPL 第 13 条第 1 款第（一）项</td>
+</tr>
+<tr>
+<td data-label="#">4</td>
+<td data-label="信息种类">校园邮箱</td>
+<td data-label="具体字段">邮箱地址</td>
+<td data-label="处理目的">身份核验、重要通知</td>
+<td data-label="处理方式">存储、发送邮件</td>
+<td data-label="是否必需">采用邮箱核验方式时必需</td>
+<td data-label="保存期限">同上</td>
+<td data-label="法律依据">同上</td>
+</tr>
+<tr>
+<td data-label="#">5</td>
+<td data-label="信息种类">账号凭证</td>
+<td data-label="具体字段">密码（<strong>加盐哈希后的密文</strong>）</td>
+<td data-label="处理目的">账号登录与安全</td>
+<td data-label="处理方式">单向哈希存储，<strong>我们不掌握你的明文密码</strong></td>
+<td data-label="是否必需">必需</td>
+<td data-label="保存期限">同上</td>
+<td data-label="法律依据">PIPL 第 51 条第（三）项（加密、去标识化）</td>
+</tr>
+<tr>
+<td data-label="#">6</td>
+<td data-label="信息种类">发布内容</td>
+<td data-label="具体字段">图文、价格、成色、交易地点意向</td>
+<td data-label="处理目的">提供信息发布服务</td>
+<td data-label="处理方式">存储、公开展示、缓存、生成缩略图</td>
+<td data-label="是否必需">依你的使用行为</td>
+<td data-label="保存期限">发布之日起 3 年（《电子商务法》第 31 条）</td>
+<td data-label="法律依据">PIPL 第 13 条第 1 款第（一）项</td>
+</tr>
+<tr>
+<td data-label="#">7</td>
+<td data-label="信息种类">沟通信息</td>
+<td data-label="具体字段">站内私信内容、时间、双方账号</td>
+<td data-label="处理目的">提供沟通服务；纠纷处理；<strong>安全审核</strong></td>
+<td data-label="处理方式">存储、<strong>依法定情形调取</strong></td>
+<td data-label="是否必需">依你的使用行为</td>
+<td data-label="保存期限">发送之日起 3 年</td>
+<td data-label="法律依据">同上</td>
+</tr>
+<tr>
+<td data-label="#">8</td>
+<td data-label="信息种类">举报与申诉</td>
+<td data-label="具体字段">举报内容、证据截图、处理结果</td>
+<td data-label="处理目的">处理举报、留存台账、配合监管</td>
+<td data-label="处理方式">存储、仅限处理人员访问</td>
+<td data-label="是否必需">依你的行为</td>
+<td data-label="保存期限">3 年</td>
+<td data-label="法律依据">《网络安全法》第 47 条；PIPL 第 13 条第 1 款第（三）项（履行法定义务）</td>
+</tr>
+<tr>
+<td data-label="#">9</td>
+<td data-label="信息种类">日志信息</td>
+<td data-label="具体字段">IP 地址、访问时间、请求路径、设备型号、操作系统、浏览器类型与版本、User-Agent</td>
+<td data-label="处理目的">安全审计、异常检测、依法留存网络日志</td>
+<td data-label="处理方式">自动记录、存储</td>
+<td data-label="是否必需"><strong>自动收集</strong>（不可关闭，否则无法提供服务）</td>
+<td data-label="保存期限"><strong>不少于 6 个月</strong></td>
+<td data-label="法律依据">《网络安全法》第 21 条第（三）项</td>
+</tr>
+<tr>
+<td data-label="#">10</td>
+<td data-label="信息种类">操作记录</td>
+<td data-label="具体字段">登录、发布、编辑、删除、举报、同意记录</td>
+<td data-label="处理目的">安全审计、举证、纠纷处理</td>
+<td data-label="处理方式">自动记录、存储</td>
+<td data-label="是否必需">自动收集</td>
+<td data-label="保存期限">3 年（同意记录至注销后 3 年）</td>
+<td data-label="法律依据">PIPL 第 51 条；《电子商务法》第 31 条</td>
+</tr>
+<tr>
+<td data-label="#">11</td>
+<td data-label="信息种类">设备标识</td>
+<td data-label="具体字段">设备型号、屏幕尺寸、系统版本</td>
+<td data-label="处理目的">兼容性适配、异常排查</td>
+<td data-label="处理方式">存储（<strong>不做跨站追踪</strong>）</td>
+<td data-label="是否必需">自动收集</td>
+<td data-label="保存期限">6 个月</td>
+<td data-label="法律依据">《网络安全法》第 21 条</td>
+</tr>
+</tbody>
+</table></div>
+<h3>4.2 逐场景说明</h3>
+<p><strong>（1）注册与核验</strong>
+你提交学号/工号与姓名，我们通过学校统一身份认证或教务接口进行<strong>一次性校验</strong>。校验通过后，我们<strong>仅保存"已通过核验"的状态、你的账号 ID 与院系年级</strong>；<strong>不保存你在学校系统的密码</strong>。若你选择校园邮箱方式，我们向该邮箱发送验证码，核验后保存邮箱地址。</p>
+<p><strong>（2）发布二手信息</strong>
+你填写的标题、描述、价格、图片、交易地点意向将<strong>公开展示</strong>，任何访问者可见。<strong>请勿在图片或文字中写入手机号、学号、宿舍房间号、身份证号</strong>——一旦写入即视为你自行公开，我们无法撤回他人已进行的截图或转存。</p>
+<p><strong>（3）站内私信</strong>
+私信内容仅你与对话方可见，但<strong>我们依法保存并在下列情形调取</strong>：①你或对方举报；②涉及人身安全、诈骗、违禁品；③公安、检察、法院、网信、市场监管等机关依法调取；④处理你提出的申诉。<strong>除此之外，我们不主动阅读你的私信内容。</strong></p>
+<p><strong>（4）安全风控</strong>
+为识别诈骗、违禁品、账号盗用，系统会对<strong>发布内容与私信</strong>进行自动化关键词与图片比对。<strong>这是自动化处理，但不构成《个人信息保护法》第 24 条意义上的"自动化决策"</strong>——它不评估你的信用、不决定你的交易价格、不产生对你的法律效果，仅在命中规则时<strong>转人工复核</strong>。你若对处理结果有异议，可申诉并要求人工复核。</p>
+<p><strong>（5）纠纷处理</strong>
+你申请平台介入时，我们会在必要范围内调取双方的发布记录、私信记录与操作日志，用于事实核查。核查结论<strong>不构成对任何一方责任的认定</strong>。</p>
+<h3>4.3 我们<strong>不收集</strong>的信息（明确排除清单）</h3>
+<p>以下信息我们<strong>不收集、不请求、不存储</strong>，若有人以本平台名义向你索取，<strong>即为诈骗，请立即举报</strong>：</p>
+<ul>
+<li>身份证号、身份证照片、户口簿、护照号</li>
+<li>人脸、指纹、声纹、虹膜等<strong>生物识别信息</strong></li>
+<li>精确地理位置（GPS 坐标）、行踪轨迹</li>
+<li>通讯录、通话记录、短信内容</li>
+<li>相册（除你主动选择上传的图片外）、其他 App 列表</li>
+<li>银行卡号、支付账户、支付密码、短信验证码</li>
+<li>学信网账号密码、教务系统密码</li>
+<li>医疗健康信息、宗教信仰、性取向、生物基因数据</li>
+<li>金融账户信息、信贷记录</li>
+</ul>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 6 条（最小必要）、第 28 条（敏感个人信息）；《网络安全法》第 41 条（不得收集与提供服务无关的个人信息）。</p>
+<h3>4.4 无需取得你同意的情形</h3>
+<p>依《个人信息保护法》第 13 条第 1 款第（二）至（七）项，下列情形我们处理你的个人信息<strong>无需取得同意</strong>：</p>
+<p>（1）为订立、履行你作为一方当事人的合同所必需（如为完成发布而处理你的发布内容）；
+（2）为履行法定职责或者法定义务所必需（如实名核验、日志留存、违法信息报告）；
+（3）为应对突发公共卫生事件，或者紧急情况下为保护自然人的生命健康和财产安全所必需；
+（4）为公共利益实施新闻报道、舆论监督等行为，在合理的范围内处理个人信息；
+（5）依照本法规定在合理的范围内处理你自行公开或者其他已经合法公开的个人信息；
+（6）法律、行政法规规定的其他情形。</p>
+<h3>4.5 关于"最小必要"的自查承诺</h3>
+<p>我们承诺：<strong>上表第 4.1 节列明的字段，与后端数据库中实际存在的个人字段逐项一致</strong>。若我们的产品新增任何收集字段，将<strong>先更新本政策并取得你的同意</strong>，再上线该功能。我们不会以"改善服务""提升体验"为名，收集与二手信息发布无关的信息。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 6 条：处理个人信息应当具有明确、合理的目的，并应当与处理目的直接相关，采取对个人权益影响最小的方式。收集个人信息，应当限于实现处理目的的最小范围，不得过度收集个人信息。</p>
+<hr/>
+<h2 id="s4">第 5 条　Cookie 与同类技术</h2>
+<p><strong>5.1</strong> 我们使用 Cookie 与本地存储（localStorage）实现以下<strong>必要功能</strong>：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>用途</th>
+<th>是否可关闭</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>会话 Cookie</td>
+<td>保持登录状态</td>
+<td>关闭后无法登录</td>
+</tr>
+<tr>
+<td>安全 Cookie</td>
+<td>防止跨站请求伪造（CSRF）</td>
+<td>关闭后无法安全使用</td>
+</tr>
+<tr>
+<td>本地存储</td>
+<td>记住"已阅读须知"状态、草稿</td>
+<td>可清除</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>5.2</strong> 我们<strong>不使用</strong>：广告追踪 Cookie、第三方统计 SDK（如友盟、GrowingIO）、社交平台像素、跨站行为追踪、用户画像标签。</p>
+<p><strong>5.3</strong> 你可通过浏览器设置拒绝或删除 Cookie，但可能导致部分功能不可用。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 13 条、第 17 条；《网络安全法》第 41 条。</p>
+<hr/>
+<h2 id="s5">第 6 条　委托处理、共享、转让与公开披露</h2>
+<h3>6.1 委托处理</h3>
+<p>我们可能委托下列主体处理你的部分个人信息。<strong>受托方只能按照我们的指示处理，不得超出约定目的，不得自行决定处理目的和方式</strong>，我们会与其约定处理目的、期限、处理方式、信息种类、保护措施及双方权利义务，并对其处理活动进行监督。</p>
+<div class="table-wrap"><table class="wide">
+<thead>
+<tr>
+<th>受托方类型</th>
+<th>委托事项</th>
+<th>涉及信息</th>
+<th>必要性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>云服务提供商</td>
+<td>服务器托管、数据存储与备份</td>
+<td>全部存储数据</td>
+<td>服务必需</td>
+</tr>
+<tr>
+<td>短信服务商</td>
+<td>发送验证码、安全通知</td>
+<td>手机号</td>
+<td>核验必需</td>
+</tr>
+<tr>
+<td>邮件服务商</td>
+<td>发送通知、举报答复</td>
+<td>校园邮箱</td>
+<td>通知必需</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 21 条。</p>
+<p><strong>6.1.1</strong> 我们要求受托方：①按约定处理，不得转委托；②采取约定的安全措施；③在委托事项完成后<strong>返还或删除</strong>个人信息；④不得留存副本。受托方违反规定造成损害的，我们依法承担相应责任。</p>
+<h3>6.2 向第三方提供（共享）</h3>
+<p><strong>6.2.1 我们不出售、不出租你的个人信息。</strong></p>
+<p><strong>6.2.2</strong> 除下列情形外，我们<strong>不向任何第三方提供</strong>你的个人信息：</p>
+<p>（1）已就提供的目的、信息种类、接收方名称与联系方式取得你的<strong>单独同意</strong>；
+（2）依据法律、行政法规的规定，或应公安、检察、法院、国家安全、网信、市场监管等机关依法定程序提出的要求；
+（3）为维护你或其他自然人的生命、健康、财产安全所必需，且无法及时取得同意；
+（4）为公共利益实施新闻报道、舆论监督，在合理范围内处理你自行公开的信息。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 23 条（向他人提供需告知并取得单独同意）、第 13 条；《网络安全法》第 42 条（未经同意不得向他人提供）。</p>
+<p class="key"><strong>6.2.3【重要】</strong> 若你在纠纷处理中申请平台介入并同意，我们可能将必要的沟通记录提供给<strong>学校辅导员、学院或保卫部门</strong>，以协助调解。<strong>该提供以你明确同意为前提</strong>；涉及人身安全的紧急情形除外。</p>
+<h3>6.3 转让</h3>
+<p><strong>6.3.1</strong> 我们<strong>不转让</strong>你的个人信息，但因合并、分立、解散、被宣告破产等原因需要转移的除外。</p>
+<p><strong>6.3.2</strong> 发生上述情形时，我们会<strong>告知你接收方的名称与联系方式</strong>；接收方变更原先的处理目的、处理方式的，应当<strong>重新取得你的同意</strong>。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 22 条。</p>
+<h3>6.4 公开披露</h3>
+<p><strong>6.4.1</strong> 我们<strong>不公开披露</strong>你的个人信息。</p>
+<p><strong>6.4.2</strong> 唯一例外：<strong>你发布的内容本身是公开的</strong>（标题、描述、图片、价格、你选择的院系年级）。<strong>你在发布时即明知并同意该等信息公开展示。</strong></p>
+<p><strong>6.4.3</strong> 若将来设置"感谢墙"展示赞助人昵称，我们仅在取得你的<strong>单独同意</strong>后进行，且只展示你自行设置的昵称，<strong>不展示金额、不排序</strong>，你可随时申请撤下。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 25 条：个人信息处理者不得公开其处理的个人信息，取得个人单独同意的除外。</p>
+<h3>6.5 例外：无需同意的情形</h3>
+<p>依《个人信息保护法》第 13 条第 1 款第（二）至（七）项、《网络安全法》第 28 条、《数据安全法》第 35 条，下列情形我们可依法提供，无需另行取得同意：</p>
+<p>（1）履行法定职责或法定义务所必需；
+（2）应对突发公共卫生事件或紧急情况下保护生命健康、财产安全所必需；
+（3）<strong>公安机关、国家安全机关依法维护国家安全和侦查犯罪的活动</strong>；
+（4）法律、行政法规规定的其他情形。</p>
+<hr/>
+<h2 id="s6">第 7 条　我们如何保护你的个人信息</h2>
+<h3>7.1 技术措施</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>措施</th>
+<th>具体做法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>传输加密</td>
+<td>全站 HTTPS（TLS 1.2 及以上），禁用不安全的旧协议</td>
+</tr>
+<tr>
+<td>存储加密</td>
+<td>密码采用<strong>加盐哈希</strong>（不可逆），不存明文；数据库文件不置于 Web 目录</td>
+</tr>
+<tr>
+<td>去标识化</td>
+<td>日志与分析中对手机号、学号做掩码；对外展示不出现真实姓名与联系方式</td>
+</tr>
+<tr>
+<td>访问控制</td>
+<td>数据库仅监听本地或内网，不对公网开放；后台管理需二次认证</td>
+</tr>
+<tr>
+<td>最小权限</td>
+<td>管理员账号按职能分级（审核/客服/运维），操作留痕，禁止共用账号</td>
+</tr>
+<tr>
+<td>安全审计</td>
+<td>记录登录、查询、导出、删除等高危操作</td>
+</tr>
+<tr>
+<td>备份</td>
+<td>每日增量、每周全量，至少一份与生产环境隔离</td>
+</tr>
+<tr>
+<td>漏洞管理</td>
+<td>及时更新依赖与系统补丁；关闭不必要的端口与服务</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 51 条；《网络安全法》第 21 条、第 42 条第 2 款。</p>
+<h3>7.2 管理制度</h3>
+<p><strong>7.2.1</strong> 我们建立个人信息保护内部管理制度与操作规程，明确<strong>收集、存储、使用、加工、传输、提供、公开、删除</strong>各环节的操作规范与责任人（第 51 条第（一）项）。</p>
+<p><strong>7.2.2</strong> 对处理个人信息的岗位人员实行<strong>权限分级</strong>，签署保密承诺，定期开展安全与合规培训（第 51 条第（二）（四）项）。</p>
+<p><strong>7.2.3</strong> 我们制定并定期演练<strong>个人信息安全事件应急预案</strong>（第 51 条第（五）项）。</p>
+<p><strong>7.2.4</strong> 依《个人信息保护法》第 54 条，我们<strong>定期（不少于每年一次）</strong>对处理个人信息的情况进行合规审计。</p>
+<h3>7.3 安全事件的处置与通知</h3>
+<p><strong>7.3.1</strong> 发生或者可能发生个人信息泄露、篡改、丢失的，我们<strong>立即采取补救措施</strong>，并<strong>通知履行个人信息保护职责的部门和你</strong>。</p>
+<p><strong>7.3.2 通知内容</strong>包括：①泄露、篡改、丢失的信息种类、原因和可能造成的危害；②我们已采取的补救措施；③你可以采取的减轻危害的措施；④我们的联系方式。</p>
+<p><strong>7.3.3</strong> 若我们采取措施能够有效避免信息泄露、篡改、丢失造成危害的，<strong>可以不通知你</strong>；但履行个人信息保护职责的部门认为可能造成危害的，我们仍将按要求通知。</p>
+<p><strong>7.3.4</strong> 通知方式：站内公告 + 站内信 + 短信（三者尽可能同时），并留存通知记录。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 57 条；《网络安全法》第 42 条第 2 款；《数据安全法》第 29 条。</p>
+<h3>7.4 网络安全等级保护</h3>
+<p><strong>7.4.1</strong> 本平台依《网络安全法》第 21 条落实网络安全等级保护制度，按<strong>第二级</strong>要求进行定级、备案与安全建设整改。</p>
+<p><strong>7.4.2</strong> 我们采取的措施包括：制定内部安全管理制度与操作规程、确定网络安全负责人、采取防范计算机病毒和网络攻击的技术措施、<strong>采取监测和记录网络运行状态与网络安全事件的技术措施并留存网络日志不少于六个月</strong>、对重要数据备份与加密。</p>
+<h3>7.5 我们做不到的（如实告知）</h3>
+<blockquote>
+<p>这一节不是免责，是《个人信息保护法》第 7 条"公开透明"原则的体现。</p>
+</blockquote>
+<p>（1）<strong>互联网不存在绝对安全。</strong> 我们无法保证任何技术措施 100% 不被突破。
+（2）<strong>你自行公开的信息无法收回。</strong> 你在发布页写入的手机号、宿舍号，可能已被他人截图、转存、抓取。
+（3）<strong>你的设备安全由你负责。</strong> 账号在他人设备上登录、密码过于简单、点击钓鱼链接导致的泄露，我们无法预防。
+（4）<strong>我们无法控制用户之间的私下交换。</strong> 你在私信中把手机号给了对方，该信息即脱离我们的控制范围。</p>
+<hr/>
+<h2 id="s7">第 8 条　你的权利与行使方式</h2>
+<blockquote>
+<p><strong>本节对照《个人信息保护法》第 17 条第 1 款第（三）项：个人行使本法规定权利的方式和程序。</strong></p>
+</blockquote>
+<h3>8.1 权利一览</h3>
+<div class="table-wrap"><table class="wide">
+<thead>
+<tr>
+<th>权利</th>
+<th>内容</th>
+<th>行使方式</th>
+<th>我们的响应时限</th>
+<th>法律依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>知情权与决定权</strong></td>
+<td>有权知悉处理规则，有权限制或拒绝他人对你的个人信息进行处理</td>
+<td>阅读本政策；通过设置页关闭可选功能</td>
+<td>即时</td>
+<td>第 44 条</td>
+</tr>
+<tr>
+<td><strong>查阅、复制权</strong></td>
+<td>查阅、复制你的个人信息</td>
+<td>账号设置页"导出我的数据"；或邮件申请</td>
+<td>15 个工作日</td>
+<td>第 45 条第 1 款</td>
+</tr>
+<tr>
+<td><strong>可携带权</strong></td>
+<td>请求将你的个人信息转移至你指定的其他处理者</td>
+<td>邮件申请，提供接收方与格式</td>
+<td>15 个工作日（符合国家网信部门规定条件的，我们提供转移途径）</td>
+<td>第 45 条第 3 款</td>
+</tr>
+<tr>
+<td><strong>更正、补充权</strong></td>
+<td>发现信息不准确或不完整，有权请求更正、补充</td>
+<td>账号设置页自行修改；或邮件申请</td>
+<td>15 个工作日</td>
+<td>第 46 条</td>
+</tr>
+<tr>
+<td><strong>删除权</strong></td>
+<td>见 8.2 五种情形</td>
+<td>账号设置页"删除"；或邮件申请</td>
+<td>15 个工作日</td>
+<td>第 47 条</td>
+</tr>
+<tr>
+<td><strong>撤回同意权</strong></td>
+<td>撤回此前作出的同意</td>
+<td>账号设置页"隐私设置"逐项关闭；或邮件申请</td>
+<td>15 个工作日</td>
+<td>第 15 条</td>
+</tr>
+<tr>
+<td><strong>注销权</strong></td>
+<td>注销账号</td>
+<td>账号设置页"注销账号"</td>
+<td>15 个工作日（含 30 日反悔期）</td>
+<td>第 47 条；《网络安全法》第 43 条</td>
+</tr>
+<tr>
+<td><strong>解释说明权</strong></td>
+<td>要求我们对处理规则作出解释说明</td>
+<td>邮件申请</td>
+<td>15 个工作日</td>
+<td>第 48 条</td>
+</tr>
+<tr>
+<td><strong>拒绝自动化处理</strong></td>
+<td>对仅通过自动化方式作出的决定，有权拒绝并要求人工复核</td>
+<td>申诉入口 / 邮件</td>
+<td>3 个工作日</td>
+<td>第 24 条第 3 款</td>
+</tr>
+</tbody>
+</table></div>
+<h3>8.2 删除权的五种法定情形</h3>
+<p>有下列情形之一的，我们<strong>主动删除</strong>；未删除的，<strong>你有权请求删除</strong>：</p>
+<ol>
+<li><strong>处理目的已实现、无法实现或者为实现处理目的不再必要</strong>（如你已删除发布内容、账号已注销）；</li>
+<li><strong>我们停止提供产品或者服务，或者保存期限已届满</strong>；</li>
+<li><strong>你撤回同意</strong>；</li>
+<li><strong>我们违反法律、行政法规或者违反约定处理你的个人信息</strong>；</li>
+<li>法律、行政法规规定的其他情形。</li>
+</ol>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 47 条第 1 款。</p>
+<p><strong>8.2.1</strong> 法律、行政法规规定的<strong>保存期限未届满</strong>，或者<strong>删除在技术上难以实现</strong>的，我们<strong>停止除存储和采取必要的安全保护措施之外的处理</strong>（第 47 条第 2 款）。</p>
+<h3>8.3 撤回同意的效果</h3>
+<p><strong>8.3.1</strong> 撤回同意<strong>不影响撤回前基于你同意已进行的个人信息处理活动的效力</strong>（第 15 条）。</p>
+<p><strong>8.3.2</strong> 撤回后，我们<strong>不再处理相应的个人信息</strong>，但你将无法使用依赖该信息的功能（如撤回手机号同意将无法接收验证码与找回账号）。</p>
+<p class="key"><strong>8.3.3【重要】</strong> 我们<strong>不会因为你不同意或撤回同意，而拒绝提供基本服务</strong>——除非该处理是提供服务的<strong>必需</strong>（如不提供学号核验，我们无法确认你的校内身份，因而无法提供发布功能）。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 16 条。</p>
+<h3>8.4 我们可能拒绝的情形</h3>
+<p><strong>8.4.1</strong> 有下列情形之一的，我们<strong>可以拒绝</strong>你的请求，并<strong>说明理由</strong>：</p>
+<p>（1）与我们履行法律法规规定的义务相关的；
+（2）与国家安全、国防安全直接相关的；
+（3）与公共安全、公共卫生、重大公共利益直接相关的；
+（4）与刑事侦查、起诉、审判和判决执行等直接相关的；
+（5）有充分证据证明你存在主观恶意或滥用权利的（如反复、大量、明显超出合理频次的申请）；
+（6）出于维护你或其他个人的生命、财产等重大合法权益但又很难得到本人同意的；
+（7）响应你的请求将导致你或其他个人、组织的合法权益受到严重损害的；
+（8）涉及商业秘密的。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 13 条、第 27 条、第 47 条；参照《信息安全技术 个人信息安全规范》（GB/T 35273—2020）相关条款。</p>
+<p><strong>8.4.2</strong> 我们拒绝的，会告知你<strong>理由</strong>及<strong>投诉途径</strong>（见第 11 条）。</p>
+<h3>8.5 关于死者个人信息</h3>
+<p><strong>8.5.1</strong> 自然人死亡的，其<strong>近亲属</strong>为了自身的合法、正当利益，可以对死者的相关个人信息行使查阅、复制、更正、删除等权利，<strong>死者生前另有安排的除外</strong>。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 49 条。</p>
+<h3>8.6 我们不做的事（明确承诺）</h3>
+<p>（1）<strong>不做用户画像</strong>，不基于你的浏览、发布、点击行为生成兴趣标签；
+（2）<strong>不做个性化推荐</strong>，信息流仅按发布时间与分类排序；
+（3）<strong>不做差别定价</strong>，不因你的设备、消费记录、赞助情况调整任何价格或权限；
+（4）<strong>不做自动化决策</strong>，不对你作出征信、评级、限制交易等具有法律效果的自动化决定；
+（5）<strong>不出售个人信息</strong>，不与任何第三方进行数据交换、共享、买卖。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 24 条（自动化决策的透明度与公平公正、不得实行不合理的差别待遇）。</p>
+<h3>8.7 个人信息保护影响评估</h3>
+<p><strong>8.7.1</strong> 依《个人信息保护法》第 55 条，下列情形我们<strong>事前进行个人信息保护影响评估</strong>，并对处理情况进行记录：</p>
+<p>（1）处理<strong>敏感个人信息</strong>；
+（2）利用个人信息进行<strong>自动化决策</strong>；
+（3）<strong>委托处理、向他人提供、公开</strong>个人信息；
+（4）其他对个人权益有重大影响的个人信息处理活动。</p>
+<p><strong>8.7.2</strong> 评估内容包括：①处理目的、处理方式等是否合法、正当、必要；②对个人权益的影响及安全风险；③所采取的保护措施是否合法、有效并与风险程度相适应。</p>
+<p><strong>8.7.3</strong> 评估报告与处理情况记录<strong>至少保存三年</strong>。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 55 条、第 56 条。</p>
+<hr/>
+<h2 id="s8">第 9 条　个人信息的存储</h2>
+<h3>9.1 存储地点</h3>
+<p><strong>9.1.1</strong> 你的个人信息存储于<strong>中华人民共和国境内</strong>的服务器。</p>
+<p><strong>9.1.2</strong> 本平台<strong>不向境外提供</strong>个人信息。若未来确需出境，我们将依《个人信息保护法》第 38 条、第 39 条履行安全评估、标准合同或认证程序，并<strong>向你告知境外接收方的名称、联系方式、处理目的、处理方式、信息种类以及你行使权利的方式和程序，取得你的单独同意</strong>。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 38–39 条；《数据安全法》第 31 条。</p>
+<h3>9.2 保存期限</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>信息类型</th>
+<th>保存期限</th>
+<th>依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>账号信息（身份核验、昵称、联系方式）</td>
+<td>账号存续期间 + 注销后 <strong>30 日</strong></td>
+<td>必要最短时间原则（PIPL 第 19 条）</td>
+</tr>
+<tr>
+<td>发布内容</td>
+<td>发布之日起 <strong>3 年</strong></td>
+<td>《电子商务法》第 31 条</td>
+</tr>
+<tr>
+<td>交易与沟通记录</td>
+<td>自交易完成之日起 <strong>3 年</strong></td>
+<td>《电子商务法》第 31 条</td>
+</tr>
+<tr>
+<td>网络日志（IP、访问记录）</td>
+<td>不少于 <strong>6 个月</strong></td>
+<td>《网络安全法》第 21 条</td>
+</tr>
+<tr>
+<td>举报与处置台账</td>
+<td><strong>3 年</strong></td>
+<td>《网络安全法》第 47 条；监管检查需要</td>
+</tr>
+<tr>
+<td>同意记录（含版本、时间、IP、哈希）</td>
+<td>注销后 <strong>3 年</strong></td>
+<td>举证需要</td>
+</tr>
+<tr>
+<td>个人信息保护影响评估报告</td>
+<td><strong>3 年</strong></td>
+<td>PIPL 第 56 条</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 19 条：除法律、行政法规另有规定外，个人信息的保存期限应当为实现处理目的所必要的最短时间。</p>
+<h3>9.3 到期处理</h3>
+<p><strong>9.3.1</strong> 保存期限届满的，我们<strong>删除</strong>或<strong>匿名化</strong>处理。</p>
+<p><strong>9.3.2</strong> 匿名化后的信息<strong>不属于个人信息</strong>，我们可能将其用于统计（如"本月发布量""违规类型分布"），但<strong>不包含任何可识别到个人的信息</strong>。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 73 条第（四）项。</p>
+<hr/>
+<h2 id="s9">第 10 条　未成年人个人信息保护</h2>
+<h3>10.1 年龄门槛</h3>
+<p><strong>10.1.1</strong> 本平台仅面向<strong>高校在籍学生与在职教职工</strong>，<strong>原则上面向年满 18 周岁的自然人</strong>。</p>
+<p><strong>10.1.2</strong> 未满 18 周岁的用户注册时，须由<strong>法定代理人（父母或其他监护人）</strong>阅读并同意本政策；我们将通过专门确认页取得该同意，并保留记录。</p>
+<p><strong>10.1.3</strong> 未满 18 周岁的用户<strong>不得</strong>发布或参与：租赁、代购、代跑腿、代取快递、校外兼职、单笔超过 200 元的交易、需线下单独见面的交易。</p>
+<h3>10.2 不满 14 周岁的处理</h3>
+<p><strong>10.2.1</strong> 本平台<strong>不向不满 14 周岁的未成年人提供服务</strong>。我们以高校在籍人员为唯一服务对象，正常情况下不会处理不满 14 周岁未成年人的个人信息。</p>
+<p><strong>10.2.2</strong> 若发现此类账号，我们将<strong>立即停止服务并删除其个人信息</strong>。</p>
+<p><strong>10.2.3</strong> 若因特殊情况确需处理不满 14 周岁未成年人个人信息，我们将：①取得其父母或其他监护人的<strong>单独同意</strong>；②<strong>制定专门的处理规则</strong>；③进行个人信息保护影响评估。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 28 条（不满十四周岁未成年人的个人信息属敏感个人信息）、第 31 条、第 55 条；《未成年人网络保护条例》；《未成年人保护法》"网络保护"专章。</p>
+<h3>10.3 未成年人保护措施</h3>
+<p>（1）限制私信对象与频次；
+（2）禁止在夜间（22:00–06:00）发起线下交易邀约；
+（3）对涉及未成年人的举报<strong>优先处理</strong>，2 小时内响应；
+（4）发现侵害未成年人权益的内容，<strong>立即删除并向公安机关报告</strong>。</p>
+<hr/>
+<h2 id="s10">第 11 条　投诉与救济渠道</h2>
+<h3>11.1 先找我们</h3>
+<p><strong>11.1.1</strong> 你认为我们的个人信息处理行为损害了你的合法权益，可先通过第 1 条的联系方式向我们投诉。我们将在 <strong>15 个工作日</strong>内答复。</p>
+<p><strong>11.1.2</strong> 我们对答复不满意的，你还可以：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>渠道</th>
+<th>适用情形</th>
+<th>联系方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>网信部门</strong></td>
+<td>违法处理个人信息、侵害个人信息权益</td>
+<td>12377（违法和不良信息举报中心）</td>
+</tr>
+<tr>
+<td><strong>市场监管部门</strong></td>
+<td>消费者权益、不公平格式条款</td>
+<td>12315</td>
+</tr>
+<tr>
+<td><strong>工业和信息化部门</strong></td>
+<td>电信与互联网服务</td>
+<td>12300</td>
+</tr>
+<tr>
+<td><strong>公安机关</strong></td>
+<td>个人信息被窃取、非法买卖、诈骗</td>
+<td>110 / 当地网安部门</td>
+</tr>
+<tr>
+<td><strong>人民法院</strong></td>
+<td>提起民事诉讼</td>
+<td>依《民事诉讼法》管辖规定</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 65 条（履行个人信息保护职责的部门受理投诉举报）、第 69 条（损害赔偿）。</p>
+<h3>11.2 举证责任</h3>
+<p><strong>11.2.1</strong> 依《个人信息保护法》第 69 条第 1 款，处理个人信息侵害个人信息权益造成损害，<strong>个人信息处理者不能证明自己没有过错的，应当承担损害赔偿等侵权责任</strong>。</p>
+<p><strong>11.2.2</strong> 这意味着：<strong>我们保存的处理记录、审核记录、同意记录，既是保护你，也是保护我们自己。</strong> 这也是我们坚持留痕的原因。</p>
+<hr/>
+<h2 id="s11">第 12 条　本政策的更新</h2>
+<p><strong>12.1</strong> 我们可能因法律法规变化、业务调整、技术升级而更新本政策。</p>
+<p><strong>12.2</strong> 更新后的版本将在平台公示，并在页首标注<strong>版本号与生效日期</strong>。</p>
+<p class="key"><strong>12.3【重要】</strong> 涉及下列<strong>重大变更</strong>的，我们将<strong>重新取得你的明示同意</strong>（弹窗勾选），而非仅以"继续使用"推定同意：</p>
+<p>（1）处理目的、处理方式、个人信息种类发生变更；
+（2）新增收集敏感个人信息；
+（3）向第三方提供、公开披露个人信息；
+（4）个人信息出境；
+（5）你行使权利的方式和程序发生实质性变化；
+（6）个人信息保护负责人或联系方式变更。</p>
+<p><strong>【法律依据】</strong>《个人信息保护法》第 14 条（同意应当在充分知情的前提下自愿、明确作出）、第 17 条第 2 款（处理目的、方式、种类变更应重新告知）。</p>
+<p><strong>12.4</strong> 我们<strong>留存每一版本的政策文本、生效时间与你的同意记录</strong>（含时间戳、IP、设备标识、文本哈希值），至少保存 3 年。</p>
+<p><strong>12.5</strong> 你不同意更新内容的，应停止使用并注销账号；<strong>在重大变更取得你的重新同意之前，我们不会按新的规则处理你的个人信息</strong>。</p>
+<hr/>
+<h2 id="s12">第 13 条　本政策的效力</h2>
+<p><strong>13.1</strong> 本政策是《用户须知》的组成部分（《用户须知》第 18.5 条附件三），与《用户须知》具有同等效力。</p>
+<p><strong>13.2</strong> 本政策与《用户须知》就个人信息处理的规定不一致时，<strong>以本政策为准</strong>。</p>
+<p><strong>13.3</strong> 本政策部分条款无效或不可执行的，不影响其他条款的效力。</p>
+<p><strong>13.4</strong> 本政策适用中华人民共和国大陆地区法律。</p>
+<hr/>
+<h2 id="s13">第 14 条　签署</h2>
+<blockquote>
+<p><strong>我已阅读并理解《隐私政策》，知悉以下事项：</strong>
+<strong>① 你们是谁、如何联系（第 1 条）；</strong>
+<strong>② 你们收集我哪些信息、为什么收集、保存多久（第 4、9 条）；</strong>
+<strong>③ 我如何查阅、复制、更正、删除、撤回同意、注销账号（第 8 条）；</strong>
+<strong>④ 你们不收集身份证号、人脸、精确位置、通讯录、银行卡信息（第 4.3 条）；</strong>
+<strong>⑤ 你们不出售、不共享我的个人信息，不做出境传输（第 6、9 条）。</strong></p>
+</blockquote>
+<p>□ 我已阅读并同意《隐私政策》（<strong>单独勾选，不与《用户须知》合并</strong>）</p>
+<p>用户昵称：＿＿＿＿＿＿＿＿　签署时间：＿＿＿＿年＿＿月＿＿日 ＿＿:＿＿　IP：＿＿＿＿＿＿＿＿　版本：V1.0</p>
+<hr/>
+</main>
+<footer>
+<p class="foot-brand"><svg class="" viewBox="0 0 56 56" aria-hidden="true"><rect width="56" height="56" rx="17" fill="#FF5A1F"/><path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/><rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/></svg><span>别丢</span><em>· 电院闲置</em></p>
+  <p>本站由在校学生个人运营，不收取任何费用，不提供在线支付与担保交易。</p>
+  <p>如发现违规内容，请使用页面内的举报入口，或邮件联系我们。</p>
+  <p style="margin-top:14px">本页面最后更新：2026-10-22</p>
+</footer>
+<div class="totop" id="tt" aria-label="返回顶部">↑</div>
+<script>
+(function(){
+  var pg=document.getElementById('pg'),tt=document.getElementById('tt');
+  function up(){
+    var h=document.documentElement.scrollHeight-window.innerHeight;
+    var y=window.scrollY||document.documentElement.scrollTop;
+    pg.style.width=(h>0?y/h*100:0)+'%';
+    if(y>600){tt.classList.add('show')}else{tt.classList.remove('show')}
+  }
+  window.addEventListener('scroll',up,{passive:true});
+  window.addEventListener('resize',up);
+  tt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+  var tc=document.querySelector('.toc');
+  if(tc && window.innerWidth>680) tc.open=true;
+  up();
+})();
+</script>
+</body>
+</html>
