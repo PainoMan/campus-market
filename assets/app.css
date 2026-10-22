@@ -407,9 +407,10 @@ textarea{resize:vertical;min-height:96px;line-height:1.6}
 .anim-ready .card:nth-child(n+7){animation-delay:.26s}
 
 /* 图片淡入 */
-.card .shot img,.gallery img{opacity:1;transition:opacity .42s ease}
-.anim-ready .card .shot img,.anim-ready .gallery img{opacity:0}
-.anim-ready .card .shot img.loaded,.anim-ready .gallery img.loaded{opacity:1}
+.card .shot img,.gallery img{opacity:1}
+/* 加载中的骨架底 */
+.card .shot{background:var(--surface-2)}
+.card .shot img{background:var(--surface-2)}
 
 /* 列表行动效 */
 .anim-ready .anim{animation:fadeUp .42s cubic-bezier(.22,.61,.36,1)}
@@ -442,3 +443,11 @@ input:focus,textarea:focus,select:focus{transform:translateY(-1px)}
   *,*::before,*::after{animation:none!important;transition:none!important}
   .card .shot img,.gallery img{opacity:1}
 }
+
+/* 图片加载失败时的占位 */
+.card .shot.ph-fail::after{
+  content:"图片加载失败";
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink-3);
+}
+.card .shot{position:relative}
