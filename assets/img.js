@@ -5,10 +5,10 @@ const IMGBB_KEY = '26673cc9508341e392df972534ef0b4b';
 const IMGBB_ENDPOINT = 'https://api.imgbb.com/1/upload';
 
 /**
- * 压缩图片：最长边 720px，JPEG 0.72
+ * 压缩图片：最长边 640px，JPEG 0.68
  * @returns {Promise<string>} dataURL
  */
-function compressImage(file, maxSide = 720, quality = 0.72) {
+function compressImage(file, maxSide = 640, quality = 0.68) {
   return new Promise((resolve, reject) => {
     if (!file || !/^image\//.test(file.type)) {
       reject(new Error('请选择图片文件'));
