@@ -215,11 +215,15 @@ async function loadStatus() {
   await paintNav();
   await load(true);
   watchScroll();
-  loadAnnounce();
-  loadStatus();
-  setInterval(loadStatus, 60000);
   Auth.verify().then(() => paintNav());
 })();
+
+/* 公告与状态独立启动：即使前面的初始化出错也不影响 */
+setTimeout(function () {
+  try { loadAnnounce(); } catch (e) {}
+  try { loadStatus(); } catch (e) {}
+  setInterval(function () { try { loadStatus(); } catch (e) {} }, 60000);
+}, 120);
 </script>
 </body>
 </html>
