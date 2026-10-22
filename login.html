@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>登录 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023b">
+<link rel="stylesheet" href="assets/app.css?v=20261023c">
 </head>
 <body>
 
@@ -19,14 +19,14 @@
 <main class="wrap" style="max-width:430px;padding-top:48px">
   <div class="kicker" style="margin-bottom:12px">SIGN IN</div>
   <h1 style="font-size:30px;letter-spacing:-.03em;margin-bottom:8px">欢迎回来</h1>
-  <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:26px">用手机号（或学号）和密码登录，本机会记住你 180 天。</p>
+  <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:26px">用注册时的手机号和密码登录，本机会记住你 180 天。</p>
 
   <div id="alert"></div>
 
   <form id="form">
     <div class="field">
-      <label>手机号 / 学号</label>
-      <input id="sid" type="text" inputmode="text" autocomplete="username" placeholder="用手机号注册的填手机号" required>
+      <label>手机号</label>
+      <input id="sid" type="text" inputmode="numeric" maxlength="11" autocomplete="username" placeholder="注册时填写的手机号" required>
     </div>
     <div class="field">
       <label>密码</label>
@@ -38,8 +38,8 @@
   <p class="form-foot">还没有账号？<a href="register.html">注册一个</a></p>
 </main>
 
-<script src="assets/api.js?v=20261023b"></script>
-<script src="assets/auth.js?v=20261023b"></script>
+<script src="assets/api.js?v=20261023c"></script>
+<script src="assets/auth.js?v=20261023c"></script>
 <script>
 const next = qs('next') || 'index.html';
 
