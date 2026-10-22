@@ -24,6 +24,8 @@
   <div class="stats" id="stats"></div>
 
   <div style="display:flex;gap:10px;margin:20px 0 22px;flex-wrap:wrap">
+    <a class="btn" href="https://119.91.29.16:8444/admin" target="_blank" id="adminBtn"
+       style="display:none;background:#0055ff">管理后台</a>
     <a class="btn" href="publish.html">发布新闲置</a>
     <a class="btn ghost" href="index.html">去逛逛</a>
     <button class="btn ghost" id="logoutBtn">退出登录</button>
@@ -130,6 +132,10 @@ async function load() {
   document.getElementById('nickname').textContent = u.nickname || ('同学' + u.id);
   document.getElementById('subtitle').textContent =
     `学号 ${u.sid} · 手机 ${u.phone_masked || '未填'} · ${u.role === 'admin' ? '管理员' : '普通用户'}`;
+  if (u.role === 'admin') {
+    const ab = document.getElementById('adminBtn');
+    if (ab) ab.style.display = 'inline-flex';
+  }
   document.getElementById('logoutBtn').onclick = () => { Auth.logout(); location.href = 'index.html'; };
   load();
 })();
