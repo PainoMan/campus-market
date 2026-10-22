@@ -70,10 +70,20 @@ async function paintNav() {
   const u = Auth.user;
   if (Auth.logged && u) {
     box.innerHTML = `
+      <a href="contact.html">联系作者</a>
+      <a href="messages.html">消息<span id="msgDot" style="display:none"></span></a>
       <a href="publish.html">发布</a>
-      <a href="me.html">${esc(u.nickname || '我的')}</a>
+      <a href="me.html">${esc(u.nickname || '我的')}</a>`;
       <a href="#" id="logoutBtn">退出</a>`;
     const btn = document.getElementById('logoutBtn');
+    api('/notifications').then(r => {
+      const d = document.getElementById('msgDot');
+      if (d && r.unread > 0) {
+        d.className = 'dot';
+        d.textContent = r.unread > 99 ? '99+' : r.unread;
+        d.style.display = 'inline-block';
+      }
+    }).catch(() => {});
     if (btn) btn.onclick = (e) => {
       e.preventDefault();
       Auth.logout();

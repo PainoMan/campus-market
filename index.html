@@ -51,9 +51,19 @@
   <div class="in">
     <div class="mono">CAMPUS MARKET</div>
     <p>只做信息撮合 · 不提供支付 · 交易请当面验货<br>
-    <a href="notice.html">用户须知</a> · <a href="privacy.html">隐私政策</a></p>
+    <a href="notice.html">用户须知</a> · <a href="privacy.html">隐私政策</a> · <a href="contact.html">联系作者</a></p>
+    <div class="site-status" id="siteStatus"><span class="led"></span><span id="statusText">正在获取站点状态…</span></div>
   </div>
 </footer>
+
+<div class="modal" id="annModal">
+  <div class="box">
+    <h2 id="annTitle"></h2>
+    <div class="meta" id="annTime"></div>
+    <div class="content" id="annBody"></div>
+    <div class="actions"><button class="btn block" onclick="closeAnn()">我知道了</button></div>
+  </div>
+</div>
 
 <script src="assets/api.js"></script>
 <script src="assets/auth.js"></script>
@@ -170,12 +180,44 @@ function bindSearch() {
 }
 
 /* ---- 启动 ---- */
+async function loadAnnounce() {
+  try {
+    const r = await api('/announcement', { auth: false });
+    const a = r.announcement;
+    if (!a) return;
+    if (localStorage.getItem('ann_seen') === String(a.id)) return;
+    document.getElementById('annTitle').textContent = a.title;
+    document.getElementById('annBody').textContent = a.body;
+    document.getElementById('annTime').textContent = '发布于 ' + a.created_at;
+    const m = document.getElementById('annModal');
+    m.dataset.id = a.id;
+    m.classList.add('show');
+  } catch (e) {}
+}
+function closeAnn() {
+  const m = document.getElementById('annModal');
+  m.classList.remove('show');
+  try { localStorage.setItem('ann_seen', m.dataset.id || ''); } catch (e) {}
+}
+async function loadStatus() {
+  try {
+    const r = await api('/stats', { auth: false });
+    const st = r.stats;
+    const el = document.getElementById('siteStatus');
+    el.className = 'site-status' + (st.level === 'busy' ? ' busy' : st.level === 'heavy' ? ' heavy' : '');
+    document.getElementById('statusText').textContent = '当前 ' + st.online + ' 人在逛 · ' + st.text;
+  } catch (e) {}
+}
+
 (async function () {
   paintChips();
   bindSearch();
   await paintNav();
   await load(true);
   watchScroll();
+  loadAnnounce();
+  loadStatus();
+  setInterval(loadStatus, 60000);
   Auth.verify().then(() => paintNav());
 })();
 </script>
