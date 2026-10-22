@@ -368,3 +368,80 @@ textarea{resize:vertical;min-height:96px;line-height:1.6}
   width:0;z-index:200;transition:width .2s,opacity .3s;
 }
 .loadbar.done{opacity:0}
+
+/* ============ 开关 ============ */
+.switch{position:relative;display:inline-block;width:46px;height:27px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch .slider{
+  position:absolute;inset:0;cursor:pointer;background:#e4e4e7;border-radius:999px;
+  transition:background .22s cubic-bezier(.4,0,.2,1);
+}
+.switch .slider::before{
+  content:"";position:absolute;width:21px;height:21px;left:3px;top:3px;
+  background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.18);
+  transition:transform .24s cubic-bezier(.34,1.4,.64,1);
+}
+.switch input:checked + .slider{background:#0a7d32}
+.switch input:checked + .slider::before{transform:translateX(19px)}
+.switch input:focus-visible + .slider{box-shadow:0 0 0 3px var(--accent-soft)}
+
+/* ============ 统计卡 ============ */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 10px;text-align:center}
+.stat .n{font-family:var(--mono);font-size:21px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.stat .l{font-size:11px;color:var(--ink-3);margin-top:3px}
+
+/* ============ 动效 ============ */
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+body{animation:pageIn .32s ease both}
+
+/* 卡片：只淡入，不锁 transform（避免和 hover 冲突） */
+.card{animation:fadeIn .42s cubic-bezier(.22,.61,.36,1) both}
+.card:nth-child(1){animation-delay:.02s}
+.card:nth-child(2){animation-delay:.06s}
+.card:nth-child(3){animation-delay:.10s}
+.card:nth-child(4){animation-delay:.14s}
+.card:nth-child(5){animation-delay:.18s}
+.card:nth-child(6){animation-delay:.22s}
+.card:nth-child(n+7){animation-delay:.26s}
+
+/* 图片淡入 */
+.card .shot img{opacity:0;transition:opacity .4s ease}
+.card .shot img.loaded{opacity:1}
+.gallery img{opacity:0;transition:opacity .45s ease}
+.gallery img.loaded{opacity:1}
+
+/* 列表行动效 */
+.anim{animation:fadeUp .42s cubic-bezier(.22,.61,.36,1) both}
+
+/* 详情页信息块 */
+.detail > div:last-child{animation:fadeUp .5s .06s cubic-bezier(.22,.61,.36,1) both}
+
+/* 按钮微交互 */
+.btn{transition:opacity .16s,transform .12s cubic-bezier(.34,1.4,.64,1),background .16s}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97)}
+
+/* 分类 chip 微交互 */
+.chip{transition:background .16s,border-color .16s,color .16s,transform .12s}
+.chip:active{transform:scale(.96)}
+
+/* 输入框聚焦轻微上浮 */
+input:focus,textarea:focus,select:focus{transform:translateY(-1px)}
+
+/* 面板进入 */
+.panel{animation:fadeUp .45s cubic-bezier(.22,.61,.36,1) both}
+.panel:nth-of-type(2){animation-delay:.05s}
+.panel:nth-of-type(3){animation-delay:.1s}
+
+/* 空状态 */
+.empty{animation:fadeIn .6s .1s both}
+
+/* 尊重系统的"减少动态效果"设置 */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .card .shot img,.gallery img{opacity:1}
+}

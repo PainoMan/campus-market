@@ -19,15 +19,20 @@
 <main class="wrap" style="max-width:760px;padding-top:34px">
   <div class="kicker" style="margin-bottom:12px">MY ACCOUNT</div>
   <h1 style="font-size:28px;letter-spacing:-.03em;margin-bottom:6px" id="nickname">我的</h1>
-  <p style="font-size:13px;color:var(--ink-2);margin-bottom:22px" id="subtitle">加载中…</p>
+  <p style="font-size:13px;color:var(--ink-2);margin-bottom:20px" id="subtitle">加载中…</p>
 
-  <div style="display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap">
+  <div class="stats" id="stats"></div>
+
+  <div style="display:flex;gap:10px;margin:20px 0 22px;flex-wrap:wrap">
     <a class="btn" href="publish.html">发布新闲置</a>
     <a class="btn ghost" href="index.html">去逛逛</a>
     <button class="btn ghost" id="logoutBtn">退出登录</button>
   </div>
 
-  <h2 style="font-size:14px;font-weight:600;margin-bottom:12px">我的发布</h2>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <h2 style="font-size:14px;font-weight:600">我的发布</h2>
+    <span class="kicker" style="margin:0">下拉开关控制是否在售</span>
+  </div>
   <div id="list"></div>
 </main>
 
@@ -41,39 +46,75 @@
 <script src="assets/api.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-const STATUS = { on: ['on', '在售'], sold: ['sold', '已出'], removed: ['off', '已下架'], pending: ['warn', '待审核'] };
+const STATUS = { on: ['on', '在售'], sold: ['sold', '已出'], removed: ['off', '已下架'] };
 
-function row(it) {
+function row(it, i) {
   const [cls, label] = STATUS[it.status] || ['', it.status];
   const img = it.thumb
-    ? `<img src="${esc(it.thumb)}" alt="">`
-    : `<div style="width:68px;height:68px;border-radius:8px;background:var(--surface-2)"></div>`;
-  return `<div class="row">
+    ? `<img src="${esc(it.thumb)}" alt="" loading="lazy" onload="this.classList.add('loaded')">`
+    : `<div style="width:68px;height:68px;border-radius:8px;background:var(--surface-2);flex-shrink:0"></div>`;
+  const live = it.status === 'on';
+
+  return `<div class="row anim" style="animation-delay:${Math.min(i * 40, 320)}ms" id="item-${it.id}">
     ${img}
     <div class="info">
-      <div class="t">${esc(it.title)}</div>
+      <a class="t" href="item.html?id=${it.id}">${esc(it.title)}</a>
       <div class="p">${priceText(it.price)}</div>
-      <div class="m"><span class="badge ${cls}">${label}</span><span>${timeAgo(it.created_at)}</span></div>
+      <div class="m"><span class="badge ${cls}" id="badge-${it.id}">${label}</span><span>${timeAgo(it.created_at)}</span></div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:6px;justify-content:center">
-      <a class="btn ghost sm" href="item.html?id=${it.id}">查看</a>
-      ${it.status === 'on' ? `<button class="btn danger sm" onclick="setStatus(${it.id},'sold')">已出</button>` : ''}
-      ${it.status === 'on' ? `<button class="btn ghost sm" onclick="setStatus(${it.id},'removed')">下架</button>` : ''}
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;justify-content:center">
+      <label class="switch" title="在售 / 下架">
+        <input type="checkbox" ${live ? 'checked' : ''} onchange="toggleLive(${it.id}, this)">
+        <span class="slider"></span>
+      </label>
+      <button class="btn ghost sm" onclick="delItem(${it.id})">删除</button>
     </div>
   </div>`;
 }
 
-async function setStatus(id, to) {
+function stats(items) {
+  const on = items.filter(x => x.status === 'on').length;
+  const sold = items.filter(x => x.status === 'sold').length;
+  const off = items.filter(x => x.status === 'removed').length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="n">${items.length}</div><div class="l">全部</div></div>
+    <div class="stat"><div class="n">${on}</div><div class="l">在售</div></div>
+    <div class="stat"><div class="n">${sold}</div><div class="l">已出</div></div>
+    <div class="stat"><div class="n">${off}</div><div class="l">已下架</div></div>`;
+}
+
+async function toggleLive(id, el) {
+  const to = el.checked ? 'on' : 'removed';
   try {
     await api('/item/' + id + '/status', { method: 'POST', body: { to } });
-    toast('已更新');
+    const b = document.getElementById('badge-' + id);
+    if (b) {
+      b.className = 'badge ' + (to === 'on' ? 'on' : 'off');
+      b.textContent = to === 'on' ? '在售' : '已下架';
+    }
+    toast(to === 'on' ? '已上架，同学能看到' : '已下架，前台不再展示');
     load();
+  } catch (e) {
+    el.checked = !el.checked;
+    toast(e.message);
+  }
+}
+
+async function delItem(id) {
+  if (!confirm('删除后不可恢复，确定删除这件物品吗？')) return;
+  try {
+    await api('/item/' + id + '/delete', { method: 'POST', body: {} });
+    const el = document.getElementById('item-' + id);
+    if (el) { el.style.opacity = '0'; el.style.transform = 'translateX(-8px)'; }
+    setTimeout(() => { load(); }, 220);
+    toast('已删除');
   } catch (e) { toast(e.message); }
 }
 
 async function load() {
   try {
     const r = await api('/my/items');
+    stats(r.items);
     document.getElementById('list').innerHTML = r.items.length
       ? r.items.map(row).join('')
       : `<div class="empty"><div class="big">EMPTY</div><p>还没有发布过东西<br><a href="publish.html" style="color:var(--accent)">发布第一件</a></p></div>`;
@@ -89,10 +130,7 @@ async function load() {
   document.getElementById('nickname').textContent = u.nickname || ('同学' + u.id);
   document.getElementById('subtitle').textContent =
     `学号 ${u.sid} · 手机 ${u.phone_masked || '未填'} · ${u.role === 'admin' ? '管理员' : '普通用户'}`;
-  document.getElementById('logoutBtn').onclick = () => {
-    Auth.logout();
-    location.href = 'index.html';
-  };
+  document.getElementById('logoutBtn').onclick = () => { Auth.logout(); location.href = 'index.html'; };
   load();
 })();
 </script>

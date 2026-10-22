@@ -46,7 +46,7 @@ function galleryHTML(images) {
     return `<div class="ph">NO IMAGE</div>`;
   }
   return images.map((src, i) =>
-    `<img src="${esc(src)}" alt="" ${i > 0 ? 'loading="lazy"' : ''}>`).join('');
+    `<img src="${esc(src)}" alt="" ${i > 0 ? 'loading="lazy"' : ''} onload="this.classList.add('loaded')">`).join('');
 }
 
 function render(d) {
@@ -71,6 +71,7 @@ function render(d) {
         ${it.status !== 'sold' ? `<button class="btn ghost sm" onclick="setStatus('sold')">标记已出</button>` : ''}
         ${it.status !== 'removed' ? `<button class="btn danger sm" onclick="setStatus('removed')">下架</button>` : ''}
         ${it.status === 'removed' ? `<button class="btn ghost sm" onclick="setStatus('on')">重新上架</button>` : ''}
+        <button class="btn danger sm" onclick="delItem()">删除</button>
       </div>
     </div>` : '';
 
@@ -152,6 +153,15 @@ async function submitMessage(e) {
   } finally {
     btn.disabled = false;
   }
+}
+
+async function delItem() {
+  if (!confirm('删除后不可恢复，确定删除这件物品吗？')) return;
+  try {
+    await api('/item/' + item.id + '/delete', { method: 'POST', body: {} });
+    toast('已删除');
+    setTimeout(() => location.href = 'me.html', 600);
+  } catch (e) { toast(e.message); }
 }
 
 async function setStatus(to) {

@@ -58,7 +58,7 @@
 <script src="assets/api.js"></script>
 <script src="assets/auth.js"></script>
 <script>
-const CATS = ['教材书籍','数码电子','生活用品','运动器材','其他'];
+const CATS = ['教材书籍','学习资料','数码电子','生活用品','宿舍家具','服饰鞋包','运动器材','美妆个护','乐器文娱','交通工具','票券卡类','其他'];
 let page = 1, hasMore = true, loading = false;
 let curCat = qs('cat') || '', curQ = qs('q') || '';
 
@@ -84,7 +84,7 @@ function paintChips() {
 /* ---- 卡片 ---- */
 function cardHTML(it) {
   const img = it.thumb
-    ? `<img src="${esc(it.thumb)}" loading="lazy" alt="">`
+    ? `<img src="${esc(it.thumb)}" loading="lazy" alt="" onload="this.classList.add('loaded')">`
     : `<div class="none">NO IMAGE</div>`;
   const sold = it.status === 'sold' ? '<span class="badge sold">已出</span>' : '';
   return `<a class="card" href="item.html?id=${it.id}">
