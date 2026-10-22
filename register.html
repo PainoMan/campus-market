@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>注册 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023a">
+<link rel="stylesheet" href="assets/app.css?v=20261023b">
 <style>
 .modal{
   position:fixed;inset:0;z-index:200;background:rgba(10,10,11,.45);
@@ -69,13 +69,9 @@
 
   <form id="form">
     <div class="field">
-      <label>学号</label>
-      <input id="sid" type="text" inputmode="numeric" autocomplete="username" placeholder="6–20 位字母或数字" required>
-    </div>
-    <div class="field">
       <label>手机号</label>
-      <input id="phone" type="text" inputmode="numeric" maxlength="11" placeholder="11 位手机号" required>
-      <div class="hint">仅用于交易纠纷时联系，不会公开展示</div>
+      <input id="phone" type="text" inputmode="numeric" maxlength="11" placeholder="11 位手机号，登录时也用它" required>
+      <div class="hint">便于联系</div>
     </div>
     <div class="field">
       <label>微信号 / QQ 号</label>
@@ -128,8 +124,8 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023a"></script>
-<script src="assets/auth.js?v=20261023a"></script>
+<script src="assets/api.js?v=20261023b"></script>
+<script src="assets/auth.js?v=20261023b"></script>
 <script>
 const form = document.getElementById('form');
 const modal = document.getElementById('consentModal');
@@ -141,18 +137,16 @@ form.onsubmit = (e) => {
   const box = document.getElementById('alert');
   box.innerHTML = '';
 
-  const sid = document.getElementById('sid').value.trim();
   const phone = document.getElementById('phone').value.trim();
   const wechat = document.getElementById('wechat').value.trim();
   const nickname = document.getElementById('nickname').value.trim();
   const pwd = document.getElementById('pwd').value;
 
-  if (!/^[0-9A-Za-z]{6,20}$/.test(sid)) { box.innerHTML = '<div class="alert err">学号格式不对（6–20 位字母或数字）</div>'; return; }
   if (!/^1[3-9]\d{9}$/.test(phone)) { box.innerHTML = '<div class="alert err">手机号格式不对</div>'; return; }
   if (!wechat) { box.innerHTML = '<div class="alert err">请填写微信号或 QQ 号</div>'; return; }
   if (pwd.length < 6) { box.innerHTML = '<div class="alert err">密码至少 6 位</div>'; return; }
 
-  pendingData = { sid, phone, wechat, nickname, pwd };
+  pendingData = { phone, wechat, nickname, pwd };
   openConsent();
 };
 
