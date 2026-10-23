@@ -1,0 +1,219 @@
+# 别丢 · 电院闲置
+
+> 校内二手信息发布板。只做信息展示，不参与交易、不提供支付与担保。
+> 广西电力职业技术学院 · 个人维护 · 免费
+
+---
+
+## 在线地址
+
+| 入口 | 地址 | 说明 |
+|---|---|---|
+| **主站（微信可开）** | https://119.91.29.16:8444/ | HTTPS，Let's Encrypt 证书 |
+| 备用（HTTP） | http://119.91.29.16/market/ | 浏览器直接访问 |
+| 备用（GitHub Pages） | https://painoman.github.io/campus-market/ | 国内访问可能不稳定 |
+| 管理后台 | https://119.91.29.16:8444/admin | 仅管理员 |
+
+---
+
+## 功能一览
+
+### 用户端
+
+| 模块 | 功能 |
+|---|---|
+| 账号 | 手机号 + 微信/QQ + 密码注册；手机号登录；**180 天无感登录** |
+| 合规 | 注册须同意《用户须知》《隐私政策》，记录昵称/时间/IP |
+| 浏览 | 13 个分类、多关键词模糊搜索、分页、触底加载、公告弹窗 |
+| 发布 | 标题/价格/分类/描述/最多 3 张图（前端压缩 → 图床）/联系方式可选公开 |
+| 管理 | 在售/下架开关、标记已出、删除 |
+| 互动 | 留言、举报、联系作者（私密）、我的消息（未读红点） |
+| 限制 | 普通用户 24 小时最多发 15 件，超限可提交申请 |
+
+### 管理后台
+
+概览 · 实时在线 · 举报处理 · 商品管理 · 用户管理 · 公告发布 · 留言回复 · 申请审核 · 操作日志
+
+---
+
+## 技术架构
+
+```
+┌──────────────────────────────┐
+│ 前端（纯静态，无框架无构建）        │
+│ GitHub Pages  ／  服务器 nginx    │
+└──────────────┬───────────────┘
+               │ JSON + CORS
+               ▼
+┌──────────────────────────────┐
+│ Python 标准库 API（单文件）        │
+│ /srv/minis-market/api.py          │
+│ SQLite：market.db                 │
+└──────────────┬───────────────┘
+               │ 只存图片 URL
+               ▼
+┌──────────────────────────────┐
+│ GitHub 仓库 img/  →  jsDelivr CDN │
+└──────────────────────────────┘
+```
+
+**设计取舍**
+
+- 后端用 Python 标准库，不引入 Flask/Django → 零依赖，内存占用小
+- 数据库 SQLite → 5000 用户以内无压力，备份就是拷一个文件
+- 图片不经过服务器 → 省带宽，4Mbps 小水管也扛得住
+- 前端无框架 → push 即部署，改一行就生效
+
+---
+
+## 目录结构
+
+```
+campus-market/                 # GitHub 仓库（前端）
+├── index.html                  列表页
+├── item.html                   详情页
+├── publish.html                发布页
+├── login.html / register.html  登录 / 注册（含欢迎动画）
+├── me.html                     我的发布
+├── messages.html               我的消息
+├── contact.html                联系作者
+├── notice.html                 用户须知（20 条）
+├── privacy.html                隐私政策
+├── DESIGN.md                   设计规范
+├── README.md                   本文件
+├── img/                        商品图片（由后端自动提交）
+└── assets/
+    ├── app.css                 全站样式
+    ├── api.js                  API 封装
+    ├── auth.js                 登录态管理
+    └── img.js                  图片压缩与上传
+
+/srv/minis-market/            # 服务器端
+├── api.py                      后端全部逻辑（约 1900 行）
+├── market.db                   数据库
+├── .secret.key                 加密密钥（600 权限）
+├── backups/                    每日备份
+└── api.log                     运行日志
+```
+
+---
+
+## 部署方式
+
+### 前端（GitHub Pages）
+
+```bash
+git clone https://github.com/PainoMan/campus-market.git
+cd campus-market
+git add -A && git commit -m "update"
+git push
+```
+
+推送后 1–3 分钟自动生效。国内访问不稳定的情况下，可直接用服务器上的同一份副本。
+
+### 后端（服务器）
+
+```bash
+# 服务管理
+systemctl status market-api      # 查看状态
+systemctl restart market-api     # 重启
+tail -f /srv/minis-market/api.log  # 看日志
+
+# 首次部署
+python3 /srv/minis-market/api.py --create-admin 手机号 密码
+```
+
+**依赖**
+
+- Python 3.11
+- cryptography（手机号加密）
+- Pillow（仅二维码/海报生成用，服务本身不需要）
+
+**nginx**：`/etc/nginx/conf.d/api.conf`，监听 8444，HTTPS + 反代 `/api/`、`/admin`
+
+**证书**：Let's Encrypt（IP 证书，6 天有效期），由 acme.sh 自动续期
+
+```bash
+~/.acme.sh/acme.sh --list          # 查看证书
+systemctl status cron              # 续期依赖 cron
+```
+
+---
+
+## 数据库结构
+
+| 表 | 用途 |
+|---|---|
+| `users` | 用户（手机号哈希 + 加密、密码哈希、角色、状态、签署留痕） |
+| `items` | 商品（标题、描述、价格、分类、图片 JSON、联系方式、状态） |
+| `messages` | 商品留言 |
+| `notifications` | 消息通知（卖家收到留言） |
+| `feedback` | 联系作者的私密留言 |
+| `reports` | 举报 |
+| `applications` | 发布限额申请 |
+| `announcements` | 公告 |
+| `sessions` / `admin_sessions` | 前台 / 后台会话 |
+| `admin_logs` | 管理操作日志 |
+
+**关键字段说明**
+
+- `users.phone_hash`：手机号的 SHA256，用于登录查询（手机号本身是加密的，不能直接查）
+- `users.phone_enc`：手机号的 AES 密文，只有管理员能解密查看
+- `users.consent_at / consent_ip / consent_version`：注册时的协议签署留痕
+- `items.images`：JSON 数组，形如 `[{"u":"原图URL","t":"缩略图URL"}]`
+
+---
+
+## 运维清单
+
+| 事项 | 周期 | 说明 |
+|---|---|---|
+| **证书续期** | 每 6 天自动 | acme.sh + cron，无需干预。若 API 突然不可用先查证书 |
+| **数据库备份** | 建议每周 | 直接拷 `/srv/minis-market/market.db` |
+| **服务器续费** | **2027-01-15 到期** | 控制台自动续费是**关闭**的，务必提前续 |
+| **日志检查** | 每月 | `tail -100 /srv/minis-market/api.log` |
+| **磁盘空间** | 每月 | `df -h`（图片在 GitHub，服务器占用很小） |
+
+---
+
+## 已知限制
+
+| 限制 | 说明 | 影响 |
+|---|---|---|
+| GitHub Pages 国内不稳定 | 间歇性超时 | 用服务器地址做主入口 |
+| 手机号无短信验证 | 注册时只校验格式 | 可能有人填假号码 |
+| 图片依赖 GitHub + jsDelivr | 仓库建议 < 50MB | 图片过多需要拆分仓库 |
+| 无全文搜索索引 | 用 SQL LIKE | 1 万件商品以内够用 |
+| 管理后台无二次验证 | 只有密码 | 手机不要外借 |
+
+---
+
+## 安全设计
+
+| 项目 | 做法 |
+|---|---|
+| 密码 | PBKDF2-HMAC-SHA256，12 万次迭代，随机盐 |
+| 手机号 | Fernet（AES-128-CBC + HMAC）加密存储 |
+| 登录 | 手机号哈希查询，明文不落库 |
+| 会话 | 32 字节随机 token，前台 180 天 / 后台 30 天，自动续期 |
+| 越权 | 所有写操作校验资源归属 |
+| XSS | 前端渲染统一转义，管理后台 `html.escape` |
+| SQL 注入 | 全部参数化查询 |
+| CSRF | 管理后台写操作校验 token，Cookie 用 SameSite=Lax |
+| 限频 | 注册 3/天/IP、发布 15/天、留言 20/天、申请 3/天 |
+
+---
+
+## 开发约定
+
+1. **改样式前先看 `DESIGN.md`**，字号、间距、字距都别随手写
+2. 静态资源带版本号（`?v=日期字母`），改完 CSS/JS 记得升版本，否则用户看到的是缓存
+3. 后端改完先 `python3 -m py_compile api.py`，再 `systemctl restart market-api`
+4. 数据库结构变更用 `ALTER TABLE ... ` 包在 try 里，兼容老库
+5. 任何依赖 `opacity:0` 的动画都不要写——见 `DESIGN.md` 第七章
+
+---
+
+## 联系方式
+
+站内「联系作者」留言，或邮件 moxi9006@icloud.com
