@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>注册 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023d">
+<link rel="stylesheet" href="assets/app.css?v=20261023e">
 <style>
 .modal{
   position:fixed;inset:0;z-index:200;background:rgba(10,10,11,.45);
@@ -44,6 +44,77 @@
 .close-x{
   background:none;border:none;font-size:22px;line-height:1;color:var(--ink-3);
   cursor:pointer;padding:4px 6px;margin:-4px -6px 0 0;
+}
+
+/* ============ 注册成功 · 欢迎层 ============ */
+.welcome{
+  position:fixed;inset:0;z-index:400;
+  background:#FAF6F0;
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;padding:32px;
+}
+.welcome.show{display:flex}
+
+.w-stage{position:relative;display:flex;flex-direction:column;align-items:center}
+
+/* 品牌方块 */
+.w-logo{position:relative;width:96px;height:96px;margin-bottom:30px}
+.w-logo svg{width:100%;height:100%;display:block;position:relative;z-index:2;
+  animation:logoIn .62s cubic-bezier(.34,1.4,.64,1);
+  transform-origin:50% 50%;
+}
+@keyframes logoIn{from{transform:scale(.82)}to{transform:scale(1)}}
+
+/* 扩散光环 */
+.w-ring{
+  position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;
+  border-radius:28px;border:1.5px solid rgba(255,90,31,.45);
+  animation:ringOut 1.5s .18s cubic-bezier(.22,.61,.36,1);opacity:0;
+}
+.w-ring.r2{animation-delay:.42s}
+@keyframes ringOut{
+  0%{transform:scale(1);opacity:.55}
+  100%{transform:scale(2.1);opacity:0}
+}
+
+/* 对勾 */
+.w-check{width:44px;height:44px;margin-bottom:18px}
+.w-check svg{width:100%;height:100%;overflow:visible}
+.w-check .ck-ring{
+  fill:none;stroke:#0a7d32;stroke-width:2;stroke-linecap:round;
+  stroke-dasharray:132;stroke-dashoffset:0;
+  transform:rotate(-90deg);transform-origin:50% 50%;
+  animation:drawRing .6s .42s cubic-bezier(.65,0,.35,1);
+}
+.w-check .ck-tick{
+  fill:none;stroke:#0a7d32;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:26;stroke-dashoffset:0;
+  animation:drawTick .34s .92s cubic-bezier(.65,0,.35,1);
+}
+@keyframes drawRing{from{stroke-dashoffset:132}to{stroke-dashoffset:0}}
+@keyframes drawTick{from{stroke-dashoffset:26}to{stroke-dashoffset:0}}
+
+/* 文案 */
+.w-title{
+  font-size:27px;font-weight:600;letter-spacing:-.03em;color:#1D1D1F;
+  margin-bottom:8px;
+  animation:riseIn .55s .68s cubic-bezier(.22,.61,.36,1);
+}
+.w-sub{
+  font-size:14px;color:#6E6E73;line-height:1.7;
+  animation:riseIn .55s .84s cubic-bezier(.22,.61,.36,1);
+}
+.w-name{color:#FF5A1F;font-weight:600}
+.w-hint{
+  margin-top:34px;font-size:11.5px;color:#A8A29E;letter-spacing:.12em;
+  animation:riseIn .55s 1.05s cubic-bezier(.22,.61,.36,1);
+}
+@keyframes riseIn{from{transform:translateY(10px)}to{transform:none}}
+
+/* 尊重系统的「减少动态效果」 */
+@media (prefers-reduced-motion: reduce){
+  .welcome *, .welcome svg{animation:none!important}
+  .w-ring{display:none}
 }
 </style>
 </head>
@@ -124,8 +195,34 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023d"></script>
-<script src="assets/auth.js?v=20261023d"></script>
+
+<div class="welcome" id="welcome">
+  <div class="w-stage">
+    <div class="w-logo">
+      <svg viewBox="0 0 56 56" aria-hidden="true">
+        <rect width="56" height="56" rx="17" fill="#FF5A1F"/>
+        <path d="M16 22v10a12 12 0 0 0 24 0V22" fill="none" stroke="#fff" stroke-width="4.6" stroke-linecap="round"/>
+        <rect x="22.4" y="9.2" width="11.2" height="11.2" rx="3.6" fill="#fff"/>
+      </svg>
+      <span class="w-ring"></span>
+      <span class="w-ring r2"></span>
+    </div>
+
+    <div class="w-check">
+      <svg viewBox="0 0 44 44" aria-hidden="true">
+        <circle class="ck-ring" cx="22" cy="22" r="21"/>
+        <path class="ck-tick" d="M13 22.5 L19.5 29 L31 17"/>
+      </svg>
+    </div>
+
+    <div class="w-title">欢迎加入别丢</div>
+    <div class="w-sub">你好，<span class="w-name" id="wName">同学</span><br>这里的东西，都来自同校的人</div>
+    <div class="w-hint">正在为你打开…</div>
+  </div>
+</div>
+
+<script src="assets/api.js?v=20261023e"></script>
+<script src="assets/auth.js?v=20261023e"></script>
 <script>
 const form = document.getElementById('form');
 const modal = document.getElementById('consentModal');
@@ -185,8 +282,7 @@ document.getElementById('agreeBtn').onclick = async () => {
     Auth.save(r.token, r.user);
     modal.classList.remove('show');
     document.body.style.overflow = '';
-    toast('注册成功，正在进入…');
-    setTimeout(() => location.href = 'index.html', 600);
+    showWelcome(r.user);
   } catch (err) {
     modal.classList.remove('show');
     document.body.style.overflow = '';
@@ -195,6 +291,16 @@ document.getElementById('agreeBtn').onclick = async () => {
     btn.textContent = '同意并继续';
   }
 };
+
+function showWelcome(user) {
+  const w = document.getElementById('welcome');
+  const nameEl = document.getElementById('wName');
+  if (nameEl && user && user.nickname) nameEl.textContent = user.nickname;
+  w.classList.add('show');
+  // 尊重「减少动态效果」：直接进入
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(() => location.href = 'index.html', reduce ? 600 : 2900);
+}
 
 (async function () {
   await paintNav();
