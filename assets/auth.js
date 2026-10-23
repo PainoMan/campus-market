@@ -90,6 +90,7 @@ async function paintNav() {
     };
   } else {
     box.innerHTML = `
+      <a href="contact.html">联系作者</a>
       <a href="login.html">登录</a>
       <a class="primary" href="register.html">注册</a>`;
   }
