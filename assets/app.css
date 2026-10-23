@@ -83,7 +83,7 @@ button,input,textarea,select{font-family:inherit}
 .nav-links a.primary:hover{opacity:.86}
 
 /* ============ Hero ============ */
-.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero{position:relative;z-index:30;border-bottom:1px solid var(--line)}
 .hero::before{
   content:"";position:absolute;inset:0;
   background:
@@ -490,3 +490,37 @@ input:focus,textarea:focus,select:focus{transform:translateY(-1px)}
 }
 .site-status.busy .led{background:#b25b00;box-shadow:0 0 0 3px rgba(178,91,0,.14)}
 .site-status.heavy .led{background:#d70015;box-shadow:0 0 0 3px rgba(215,0,21,.14)}
+
+/* ============ 搜索历史面板 ============ */
+.history-panel{
+  position:absolute;left:0;right:0;top:calc(100% + 2px);z-index:200;
+  margin-top:0;
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 12px 32px -12px rgba(0,0,0,.18);
+  padding:6px 0 4px;display:none;
+}
+.history-panel.show{display:block}
+.hp-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}
+.hp-title{font-size:11px;color:var(--ink-3);letter-spacing:.1em}
+.hp-icon-btn{
+  display:grid;place-items:center;width:26px;height:26px;
+  border:none;background:transparent;border-radius:8px;
+  color:var(--ink-3);cursor:pointer;transition:background .15s,color .15s;
+}
+.hp-icon-btn:hover{background:var(--surface-2);color:var(--ink-2)}
+.hp-icon-btn:active{transform:scale(.94)}
+.hp-list{list-style:none;margin:0;padding:0}
+.hp-item{
+  position:relative;display:flex;align-items:center;gap:10px;
+  padding:11px 14px;cursor:pointer;transition:background .14s;overflow:hidden;
+}
+.hp-item:hover{background:var(--surface-2)}
+.hp-item .hp-clock{flex-shrink:0;color:var(--ink-3)}
+.hp-item .hp-text{
+  flex:1;min-width:0;font-size:14px;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hp-item .hp-del{flex-shrink:0;font-size:11px;color:var(--danger);opacity:0;transition:opacity .15s}
+.hp-item.pressing{background:#fff2f1}
+.hp-item.pressing .hp-del{opacity:1}
+.hp-empty{padding:18px 14px 20px;text-align:center;font-size:12.5px;color:var(--ink-3)}
