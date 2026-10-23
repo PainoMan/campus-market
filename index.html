@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>别丢 · 同学的闲置流转</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023f">
+<link rel="stylesheet" href="assets/app.css?v=20261023g">
 </head>
 <body>
 
@@ -31,6 +31,14 @@
     <div class="search">
       <span class="ico"></span>
       <input id="q" type="search" placeholder="搜教材、耳机、自行车…" autocomplete="off">
+    </div>
+    <div class="hot-row" id="hotRow">
+      <span class="hot-label">常搜</span>
+      <button class="hot" data-q="教材">教材</button>
+      <button class="hot" data-q="耳机">耳机</button>
+      <button class="hot" data-q="自行车">自行车</button>
+      <button class="hot" data-q="台灯">台灯</button>
+      <button class="hot" data-q="球拍">球拍</button>
     </div>
   </div>
 </header>
@@ -65,8 +73,8 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023f"></script>
-<script src="assets/auth.js?v=20261023f"></script>
+<script src="assets/api.js?v=20261023g"></script>
+<script src="assets/auth.js?v=20261023g"></script>
 <script>
 const CATS = ['教材书籍','学习资料','数码电子','生活用品','宿舍家具','服饰鞋包','运动器材','美妆个护','乐器文娱','交通工具','票券卡类','其他'];
 let page = 1, hasMore = true, loading = false;
@@ -164,6 +172,17 @@ function watchScroll() {
     if (es[0].isIntersecting && hasMore && !loading) load();
   }, { rootMargin: '300px' }).observe(sentinel);
 }
+
+/* ---- 热门搜索 ---- */
+document.querySelectorAll('.hot').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    const q = this.dataset.q;
+    curQ = q;
+    const input = document.getElementById('q');
+    if (input) input.value = q;
+    reload();
+  });
+});
 
 /* ---- 搜索 ---- */
 function bindSearch() {

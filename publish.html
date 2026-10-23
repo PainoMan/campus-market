@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>发布闲置 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023f">
+<link rel="stylesheet" href="assets/app.css?v=20261023g">
 </head>
 <body>
 
@@ -44,12 +44,19 @@
         <select id="fCat">
           <option>教材书籍</option><option>学习资料</option><option>数码电子</option><option>生活用品</option><option>宿舍家具</option><option>服饰鞋包</option><option>运动器材</option><option>美妆个护</option><option>乐器文娱</option><option>交通工具</option><option>票券卡类</option><option>其他</option>
         </select>
+        <div class="cat-hint" id="catHint"></div>
       </div>
     </div>
 
     <div class="field">
       <label>描述</label>
       <textarea id="fBody" maxlength="1000" placeholder="成色、购买时间、有没有笔记、为什么出……"></textarea>
+      <div class="phrase-row">
+        <button type="button" class="phrase" data-t="九成新，无笔记">九成新，无笔记</button>
+        <button type="button" class="phrase" data-t="可小刀">可小刀</button>
+        <button type="button" class="phrase" data-t="可当面试">可当面试</button>
+        <button type="button" class="phrase" data-t="刚买不久，用不上">刚买不久</button>
+      </div>
     </div>
 
     <div class="field">
@@ -98,9 +105,9 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023f"></script>
-<script src="assets/auth.js?v=20261023f"></script>
-<script src="assets/img.js?v=20261023f"></script>
+<script src="assets/api.js?v=20261023g"></script>
+<script src="assets/auth.js?v=20261023g"></script>
+<script src="assets/img.js?v=20261023g"></script>
 <script>
 let files = [];
 
@@ -174,6 +181,73 @@ async function submit() {
 document.getElementById('submitBtn').onclick = submit;
 
 /* ============ 懒人化 ============ */
+
+/* ---- 分类智能推荐 ---- */
+const CAT_RULES = [
+  { kw: ['教材','课本','高数','数学','英语','物理','化学','电路','专业课','习题'], cat: '教材书籍' },
+  { kw: ['笔记','资料','真题','试卷','复习','考研','专升本','题库'], cat: '学习资料' },
+  { kw: ['手机','电脑','耳机','充电','数据线','键盘','鼠标','相机','平板','显示器','U盘','硬盘','音箱'], cat: '数码电子' },
+  { kw: ['衣架','水杯','台灯','电扇','吹风','洗漱','收纳','被子','枕头','暖壶','盆','桶'], cat: '生活用品' },
+  { kw: ['桌','椅','柜','床垫','书架','晾衣杆','置物架'], cat: '宿舍家具' },
+  { kw: ['衣','裤','鞋','包','外套','T恤','裙','帽','袜'], cat: '服饰鞋包' },
+  { kw: ['球','拍','哑铃','瑜伽','跑步','跳绳','羽毛球','篮球','足球','护腕'], cat: '运动器材' },
+  { kw: ['口红','面膜','洗面奶','护肤','香水','化妆','防晒'], cat: '美妆个护' },
+  { kw: ['吉他','琴','画笔','手办','游戏','桌游','专辑','音响','麦克风'], cat: '乐器文娱' },
+  { kw: ['电动车','摩托','自行车','头盔','车锁','滑板'], cat: '交通工具' },
+  { kw: ['票','会员','券','健身卡','电影票','卡'], cat: '票券卡类' },
+  { kw: ['代取','跑腿','打印','代做','辅导','帮忙','维修','代排队'], cat: '校园服务' },
+];
+
+let catTouched = false;
+let guessTimer = null;
+
+function guessCategory(title) {
+  if (!title) return null;
+  for (const rule of CAT_RULES) {
+    for (const kw of rule.kw) {
+      if (title.indexOf(kw) > -1) return rule.cat;
+    }
+  }
+  return null;
+}
+
+document.getElementById('fCat').addEventListener('change', function () {
+  catTouched = true;
+  const h = document.getElementById('catHint');
+  h.classList.remove('show');
+});
+
+document.getElementById('fTitle').addEventListener('input', function () {
+  const val = this.value;
+  clearTimeout(guessTimer);
+  guessTimer = setTimeout(function () {
+    if (catTouched) return;                 // 用户手动选过，不再干预
+    const g = guessCategory(val);
+    const sel = document.getElementById('fCat');
+    const hint = document.getElementById('catHint');
+    if (g && sel.value !== g) {
+      sel.value = g;
+      hint.textContent = '已自动归类到「' + g + '」，可手动修改';
+      hint.classList.add('show');
+      saveDraft();
+    } else if (!g) {
+      hint.classList.remove('show');
+    }
+  }, 320);
+});
+
+/* ---- 描述常用短语 ---- */
+document.querySelectorAll('.phrase').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    const ta = document.getElementById('fBody');
+    const t = this.dataset.t;
+    ta.value = ta.value.trim()
+      ? ta.value.trim().replace(/[，,。]$/, '') + '，' + t
+      : t;
+    ta.focus();
+    saveDraft();
+  });
+});
 
 // 面议：价格归零
 document.getElementById('freePrice').addEventListener('click', function () {
