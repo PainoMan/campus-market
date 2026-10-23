@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>发布闲置 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023e">
+<link rel="stylesheet" href="assets/app.css?v=20261023f">
 </head>
 <body>
 
@@ -34,7 +34,10 @@
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="field">
         <label>价格（元）</label>
-        <input id="fPrice" type="number" min="0" step="0.1" value="0" placeholder="0 表示面议">
+        <div class="input-with-btn">
+          <input id="fPrice" type="number" min="0" step="0.1" value="0" placeholder="0 表示面议">
+          <button type="button" class="mini-btn" id="freePrice">面议</button>
+        </div>
       </div>
       <div class="field">
         <label>分类</label>
@@ -95,9 +98,9 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023e"></script>
-<script src="assets/auth.js?v=20261023e"></script>
-<script src="assets/img.js?v=20261023e"></script>
+<script src="assets/api.js?v=20261023f"></script>
+<script src="assets/auth.js?v=20261023f"></script>
+<script src="assets/img.js?v=20261023f"></script>
 <script>
 let files = [];
 
@@ -154,6 +157,7 @@ async function submit() {
       method: 'POST',
       body: { title, body, price, category, contact, show_contact: show, images: urls }
     });
+    clearDraft();
     location.href = 'item.html?id=' + r.id;
   } catch (e) {
     // 风控提示：弹窗 + 立刻申请入口
@@ -168,6 +172,69 @@ async function submit() {
 }
 
 document.getElementById('submitBtn').onclick = submit;
+
+/* ============ 懒人化 ============ */
+
+// 面议：价格归零
+document.getElementById('freePrice').addEventListener('click', function () {
+  document.getElementById('fPrice').value = 0;
+  this.textContent = '已设为面议';
+  clearTimeout(this._t);
+  this._t = setTimeout(() => { this.textContent = '面议'; }, 1400);
+  saveDraft();
+});
+
+// 草稿：只存文字，不存图片（base64 太大）
+const DRAFT_KEY = 'publish_draft_v1';
+let draftTimer = null;
+
+function collectDraft() {
+  return {
+    title: document.getElementById('fTitle').value,
+    price: document.getElementById('fPrice').value,
+    category: document.getElementById('fCat').value,
+    body: document.getElementById('fBody').value,
+    contact: document.getElementById('fContact').value,
+    show: document.getElementById('fShow').checked,
+    at: Date.now()
+  };
+}
+
+function saveDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(() => {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectDraft())); } catch (e) {}
+  }, 400);
+}
+
+function restoreDraft() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) {}
+  if (!d) return false;
+  // 超过 7 天的草稿丢弃
+  if (Date.now() - (d.at || 0) > 7 * 86400 * 1000) {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+    return false;
+  }
+  if (d.title) document.getElementById('fTitle').value = d.title;
+  if (d.price !== undefined) document.getElementById('fPrice').value = d.price;
+  if (d.category) document.getElementById('fCat').value = d.category;
+  if (d.body) document.getElementById('fBody').value = d.body;
+  if (d.contact) document.getElementById('fContact').value = d.contact;
+  if (d.show !== undefined) document.getElementById('fShow').checked = d.show;
+  return true;
+}
+
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+
+['fTitle', 'fPrice', 'fBody', 'fContact'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', saveDraft);
+});
+document.getElementById('fCat').addEventListener('change', saveDraft);
+document.getElementById('fShow').addEventListener('change', saveDraft);
 
 function showLimit(msg) {
   document.getElementById('limitMsg').textContent = msg;
@@ -199,7 +266,13 @@ async function submitApply() {
   await paintNav();
   const u = await Auth.verify();
   if (!u) { Auth.requireLogin('publish.html'); return; }
-  if (u.wechat) document.getElementById('fContact').placeholder = '默认：' + u.wechat;
+  // 联系方式：默认填入注册时的微信号，用户可改
+  if (u.wechat && !document.getElementById('fContact').value) {
+    document.getElementById('fContact').value = u.wechat;
+  }
+  // 恢复草稿
+  const restored = restoreDraft();
+  if (restored) toast('已恢复上次未发布的草稿', 2600);
 })();
 </script>
 </body>

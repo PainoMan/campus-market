@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>注册 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023e">
+<link rel="stylesheet" href="assets/app.css?v=20261023f">
 <style>
 .modal{
   position:fixed;inset:0;z-index:200;background:rgba(10,10,11,.45);
@@ -131,6 +131,20 @@
   .welcome *, .welcome svg{animation:none!important}
   .w-ring{display:none}
 }
+
+/* 输入框 + 内嵌小按钮 */
+.input-with-btn{position:relative;display:flex;gap:8px}
+.input-with-btn input{flex:1;min-width:0}
+.mini-btn{
+  flex-shrink:0;padding:0 16px;height:46px;
+  border:1px solid var(--line-strong);border-radius:12px;
+  background:#fff;color:var(--ink);font-size:13px;font-family:inherit;
+  cursor:pointer;transition:background .15s,border-color .15s;
+  white-space:nowrap;
+}
+.mini-btn:hover{background:var(--surface-2);border-color:var(--ink-3)}
+.mini-btn:active{transform:scale(.97)}
+.mini-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -165,7 +179,11 @@
     </div>
     <div class="field">
       <label>昵称（可选）</label>
-      <input id="nickname" type="text" maxlength="20" placeholder="会显示在商品和留言里">
+      <div class="input-with-btn">
+        <input id="nickname" type="text" maxlength="20" placeholder="会显示在商品和留言里">
+        <button type="button" class="mini-btn" id="randNick" title="换一个">随机</button>
+      </div>
+      <div class="hint">想不到就点「随机」，再点一次换一个</div>
     </div>
     <div class="field">
       <label>密码</label>
@@ -237,8 +255,8 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=20261023e"></script>
-<script src="assets/auth.js?v=20261023e"></script>
+<script src="assets/api.js?v=20261023f"></script>
+<script src="assets/auth.js?v=20261023f"></script>
 <script>
 const form = document.getElementById('form');
 const modal = document.getElementById('consentModal');
@@ -317,6 +335,28 @@ function showWelcome(user) {
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   setTimeout(() => location.href = 'index.html', reduce ? 600 : 2900);
 }
+
+
+/* ---------- 随机昵称 ---------- */
+const NICK_A = ['安静的','爱睡觉的','暴躁的','温柔的','快乐的','迷糊的','认真的',
+                '发呆的','早起的','夜猫子','会飞的','吃瓜的','路过的','低调的',
+                '闪亮的','慢半拍的','好奇的','社恐的','话痨的','佛系的'];
+const NICK_B = ['橘子','柚子','柠檬','海豹','猫头鹰','柯基','团子','云朵','小满',
+                '阿呆','小鹿','鲸鱼','土豆','栗子','向日葵','汽水','布丁','山楂',
+                '麻雀','仓鼠','柚子茶','麦穗','蘑菇','大福','椰奶'];
+function randomNick() {
+  const a = NICK_A[Math.floor(Math.random() * NICK_A.length)];
+  const b = NICK_B[Math.floor(Math.random() * NICK_B.length)];
+  return a + b;
+}
+document.getElementById('randNick').addEventListener('click', function () {
+  const inp = document.getElementById('nickname');
+  inp.value = randomNick();
+  // 轻微反馈：按钮闪一下
+  this.textContent = '换一个';
+  clearTimeout(this._t);
+  this._t = setTimeout(() => { this.textContent = '随机'; }, 1200);
+});
 
 (async function () {
   await paintNav();

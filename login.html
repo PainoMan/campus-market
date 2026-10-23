@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa">
 <title>登录 · 别丢</title>
-<link rel="stylesheet" href="assets/app.css?v=20261023e">
+<link rel="stylesheet" href="assets/app.css?v=20261023f">
 </head>
 <body>
 
@@ -38,8 +38,8 @@
   <p class="form-foot">还没有账号？<a href="register.html">注册一个</a></p>
 </main>
 
-<script src="assets/api.js?v=20261023e"></script>
-<script src="assets/auth.js?v=20261023e"></script>
+<script src="assets/api.js?v=20261023f"></script>
+<script src="assets/auth.js?v=20261023f"></script>
 <script>
 const next = qs('next') || 'index.html';
 
@@ -57,6 +57,7 @@ document.getElementById('form').onsubmit = async (e) => {
   try {
     const r = await api('/login', { method: 'POST', body: { sid, pwd }, auth: false });
     Auth.save(r.token, r.user);
+    try { localStorage.setItem('last_phone', sid); } catch (e) {}
     location.href = next;
   } catch (err) {
     box.innerHTML = `<div class="alert err">${esc(err.message)}</div>`;
@@ -67,6 +68,11 @@ document.getElementById('form').onsubmit = async (e) => {
 
 (async function () {
   await paintNav();
+  // 懒人化：回填上次登录用的手机号
+  try {
+    const last = localStorage.getItem('last_phone');
+    if (last) document.getElementById('sid').value = last;
+  } catch (e) {}
   if (Auth.logged) {
     const u = await Auth.verify();
     if (u) { location.href = next; return; }
